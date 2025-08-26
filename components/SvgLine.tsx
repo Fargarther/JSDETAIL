@@ -4,223 +4,182 @@ import { useEffect, useRef, useState } from "react";
 
 type Props = {
   src: string;                // e.g. "/Images/Single_line_design.svg"
-  nearTopPx?: number;         // trigger distance from viewport top (default 120)
+  nearTopPx?: number;         // trigger distance from top (default 120)
+  staggerMs?: number;         // per-path stagger
   stroke?: string;            // default "currentColor"
   strokeWidth?: number;       // default 2.5
   decorative?: boolean;       // if true, aria-hidden
-  scrub?: boolean;            // tie each path’s draw to scroll while in view
-  once?: boolean;             // play once and don’t reverse (default true)
-  groupByRowPx?: number;      // group paths whose bbox.y are within this px (optional)
-};
-
-type PathInfo = {
-  el: SVGPathElement;
-  len: number;
-  bboxTop: number;
-  groupKey?: number;
+  scrub?: boolean;            // if true, tie draw to scroll
 };
 
 export default function SvgLine({
   src,
   nearTopPx = 120,
+  staggerMs = 60,
   stroke = "currentColor",
   strokeWidth = 2.5,
   decorative = true,
   scrub = false,
-  once = true,
-  groupByRowPx, // e.g., 8–20 to group horizontal segments
 }: Props) {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const [ready, setReady] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+    let cleanupFns: Array<() => void> = [];
     let killed = false;
-    const cleanup: Array<() => void> = [];
 
     (async () => {
       if (!wrapperRef.current) return;
 
-      // Fetch + inline SVG
+      // fetch + inline SVG
       const res = await fetch(src, { cache: "force-cache" });
       if (!res.ok) return;
       const svgText = await res.text();
       if (killed) return;
 
       wrapperRef.current.innerHTML = svgText;
-      const svg = wrapperRef.current.querySelector("svg") as SVGSVGElement | null;
+      const svg = wrapperRef.current.querySelector("svg");
       if (!svg) return;
-
       svg.setAttribute("data-line-reveal", "");
+      
+      // Set responsive sizing constraints
+      svg.style.width = "100%";
+      svg.style.height = "auto";
+      svg.style.maxWidth = "7200px";
+      svg.style.maxHeight = "540vh";
+      svg.style.display = "block";
+      
       if (decorative) {
         svg.setAttribute("role", "img");
         svg.setAttribute("aria-hidden", "true");
       }
 
-      const paths = Array.from(svg.querySelectorAll("path")) as SVGPathElement[];
-      if (!paths.length) { setReady(true); return; }
-
-      // Reduced motion: draw immediately
-      const reduced =
-        typeof window !== "undefined" &&
+      // style paths
+      const paths = Array.from(svg.querySelectorAll("path"));
+      // reduced motion?
+      const reduced = typeof window !== "undefined" &&
         window.matchMedia &&
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      // Prepare paths WITHOUT flicker
-      const infos: PathInfo[] = [];
+      // Prepare SVG paths for drawing effect (prevent flicker)
+      const pathElements: SVGPathElement[] = [];
       for (const p of paths) {
-        const len = p.getTotalLength();
-        // disable transition while setting the hidden state to avoid the brief hide-then-draw flash
-        p.style.transition = "none";
-        p.style.strokeDasharray = String(len);
-        p.style.strokeDashoffset = String(len);
-        p.style.fill = "none";
-        p.style.stroke = stroke;
-        p.style.strokeWidth = String(strokeWidth);
-        (p.style as any).vectorEffect = "non-scaling-stroke";
-        infos.push({ el: p, len, bboxTop: 0 });
+        const pathEl = p as SVGPathElement;
+        const L = pathEl.getTotalLength();
+        (pathEl as any).__len = L;
+        
+        // Disable all transitions initially to prevent flash
+        pathEl.style.transition = "none";
+        pathEl.style.strokeDasharray = String(L);
+        pathEl.style.strokeDashoffset = String(L);
+        pathEl.style.fill = "none";
+        pathEl.style.stroke = stroke;
+        pathEl.style.strokeWidth = String(strokeWidth);
+        pathEl.style.vectorEffect = "non-scaling-stroke";
+        pathEl.style.strokeLinecap = "round";
+        pathEl.style.strokeLinejoin = "round";
+        
+        pathElements.push(pathEl);
       }
-      // Force reflow, then re-enable transitions (only actual draws will animate)
+      
+      // Force reflow to apply initial styles
       svg.getBoundingClientRect();
-      for (const p of paths) p.style.transition = "";
+      
+      // Re-enable smooth transitions for animation
+      for (const pathEl of pathElements) {
+        pathEl.style.transition = "stroke-dashoffset 2s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+      }
 
       if (reduced) {
-        for (const p of paths) p.style.strokeDashoffset = "0";
-        setReady(true);
+        for (const p of paths) (p as SVGPathElement).style.strokeDashoffset = "0";
+        setLoaded(true);
         return;
       }
 
-      // Compute bbox tops (in SVG local space); used for optional grouping
-      for (const info of infos) {
-        try {
-          const bb = info.el.getBBox();
-          info.bboxTop = bb.y;
-        } catch {
-          info.bboxTop = 0;
-        }
-      }
-
-      // Optional grouping by approximate row (useful if one visual stroke is split)
-      if (groupByRowPx && groupByRowPx > 0) {
-        // Sort by bboxTop and bucket into groups
-        infos.sort((a, b) => a.bboxTop - b.bboxTop);
-        let groupId = 0;
-        let currentStart = infos[0]?.bboxTop ?? 0;
-        for (const info of infos) {
-          if (Math.abs(info.bboxTop - currentStart) > groupByRowPx) {
-            groupId++;
-            currentStart = info.bboxTop;
-          }
-          info.groupKey = groupId;
-        }
-      }
-
+      // Animate with GSAP
       const { gsap } = await import("gsap");
       const { ScrollTrigger } = await import("gsap/ScrollTrigger");
       gsap.registerPlugin(ScrollTrigger);
 
-      // Helper: make a trigger for a single element
-      const makeTrigger = (el: Element, tweenFn: () => gsap.core.Tween | gsap.core.Timeline) => {
-        const t = tweenFn();
-        const st = ScrollTrigger.create({
-          trigger: el,
-          start: `top+=${nearTopPx} top`,
-          // when `scrub` is true we tie progress manually (see below)
-          once: !scrub && once,
-          onEnter: () => {
-            if (!scrub) t.play();
-          },
-          onLeaveBack: () => {
-            if (!scrub && !once) t.reverse();
-          },
-          // for scrub we’ll hook progress below
-        });
-        cleanup.push(() => st.kill(), () => t.kill());
-        return { t, st };
-      };
-
-      if (scrub) {
-        // Per-path scrub: the draw amount follows scroll while the path is in view
-        for (const info of infos) {
-          const { el, len } = info;
-          const tween = gsap.to(el, {
-            strokeDashoffset: 0,
-            ease: "none",
-            paused: true, // we’ll drive progress from ScrollTrigger
-          });
-          const st = ScrollTrigger.create({
-            trigger: el,
-            start: `top+=${nearTopPx} top`,
-            end: "bottom top",
-            scrub: true,
-            onUpdate: (self) => tween.progress(self.progress),
-          });
-          cleanup.push(() => st.kill(), () => tween.kill());
-        }
-      } else if (groupByRowPx && groupByRowPx > 0) {
-        // Grouped one-shots: all paths in the same visual row draw together when the first of them enters
-        const groups = new Map<number, SVGPathElement[]>();
-        for (const info of infos) {
-          const k = info.groupKey ?? 0;
-          if (!groups.has(k)) groups.set(k, []);
-          groups.get(k)!.push(info.el);
-        }
-        for (const [, groupPaths] of groups) {
-          // Use the path with the smallest top as trigger
-          const triggerEl = groupPaths.reduce((min, el) => {
-            const a = (el as any).getBoundingClientRect?.()?.top ?? 0;
-            const b = (min as any).getBoundingClientRect?.()?.top ?? 0;
-            return a < b ? el : min;
-          }, groupPaths[0]);
-
-          makeTrigger(triggerEl, () =>
-            gsap.to(groupPaths, {
-              strokeDashoffset: 0,
-              stagger: 0.06, // small intra-group stagger
-              duration: 1.1,
-              ease: "power2.out",
-              paused: true,
-            })
-          );
-        }
-      } else {
-        // Simple per-path one-shot: each path draws when its own top nears the viewport top
-        for (const info of infos) {
-          const { el } = info;
-          makeTrigger(el, () =>
-            gsap.to(el, {
-              strokeDashoffset: 0,
-              duration: 1.1,
-              ease: "power2.out",
-              paused: true,
-            })
-          );
-        }
-      }
-
-      // Refresh after layout (especially if fonts/images affect flow)
-      requestAnimationFrame(() => {
-        try { ScrollTrigger.refresh(); } catch {}
+      // Create drawing animation timeline
+      let tl = gsap.timeline({
+        paused: true,
+        defaults: { 
+          ease: "none", // Use linear for consistent drawing speed
+          duration: 3, // Longer duration for more dramatic effect
+        },
       });
 
-      setReady(true);
+      // If scrub mode - tie drawing to scroll progress
+      if (scrub) {
+        tl.to(pathElements, {
+          strokeDashoffset: 0,
+          duration: 1,
+          stagger: {
+            each: 0.2, // Delay between each path starting
+            ease: "power2.inOut"
+          }
+        });
+
+        const st = ScrollTrigger.create({
+          trigger: svg,
+          start: `top+=${nearTopPx} top`,
+          end: "bottom center", // Longer scroll distance for smoother scrub
+          scrub: 1.5, // Smooth scrubbing with slight lag
+          onUpdate: (self) => tl.progress(self.progress),
+        });
+
+        cleanupFns.push(() => st.kill());
+      } else {
+        // Classic staggered drawing effect
+        tl.to(pathElements, {
+          strokeDashoffset: 0,
+          duration: 2.5, // Individual path drawing time
+          stagger: {
+            each: staggerMs / 1000,
+            ease: "power1.inOut"
+          },
+          ease: "power1.inOut" // Smooth drawing motion
+        });
+
+        // Trigger when SVG comes into view from bottom (bottom-up design)
+        const st = ScrollTrigger.create({
+          trigger: svg,
+          start: `top+=${nearTopPx} top`,
+          once: true,
+          onEnter: () => {
+            tl.play();
+          },
+        });
+
+        cleanupFns.push(() => st.kill());
+      }
+
+      cleanupFns.push(() => {
+        // Kill timeline
+        // @ts-ignore
+        tl?.kill?.();
+      });
+
+      setLoaded(true);
     })();
 
     return () => {
       killed = true;
-      // run all cleanups
-      for (const fn of cleanup.splice(0)) {
-        try { fn(); } catch {}
+      for (const fn of cleanupFns.splice(0)) {
+        try { 
+          fn(); 
+        } catch {}
       }
     };
-  }, [src, nearTopPx, stroke, strokeWidth, decorative, scrub, once, groupByRowPx]);
+  }, [src, nearTopPx, staggerMs, stroke, strokeWidth, decorative, scrub]);
 
   return (
     <div
       ref={wrapperRef}
       aria-hidden={decorative ? "true" : undefined}
-      className="mx-auto max-w-[1200px]"
-      data-ready={ready ? "true" : "false"}
+      className="mx-auto flex justify-center items-center"
+      data-loaded={loaded ? "true" : "false"}
     />
   );
 }
-
