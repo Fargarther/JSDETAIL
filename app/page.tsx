@@ -22,8 +22,9 @@ export default function Page() {
       <section className="py-16">
         <SvgLine 
           src="/Images/Single_line_design.svg" 
-          nearTopPx={120} 
+          nearTopPx={120}
           scrub={true}
+          once={false}
           stroke="currentColor"
           strokeWidth={2}
         />

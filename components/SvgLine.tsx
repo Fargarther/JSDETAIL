@@ -52,11 +52,9 @@ export default function SvgLine({
 
       svg.setAttribute("data-line-reveal", "");
       
-      // Set responsive sizing constraints
+      // Set natural responsive sizing
       svg.style.width = "100%";
       svg.style.height = "auto";
-      svg.style.maxWidth = "7200px";
-      svg.style.maxHeight = "540vh";
       svg.style.display = "block";
       
       if (decorative) {
@@ -134,48 +132,37 @@ export default function SvgLine({
         const st = ScrollTrigger.create({
           trigger: el,
           start: `top+=${nearTopPx} top`,
-          // when `scrub` is true we tie progress manually (see below)
           once: !scrub && once,
           onEnter: () => {
+            if (!scrub) t.play();
+          },
+          onEnterBack: () => {
+            // Critical: Handle upward scrolling - fires when scrolling up
             if (!scrub) t.play();
           },
           onLeaveBack: () => {
             if (!scrub && !once) t.reverse();
           },
-          // for scrub we'll hook progress below
         });
         cleanup.push(() => st.kill(), () => t.kill());
         return { t, st };
       };
 
       if (scrub) {
-        // Per-path scrub: each path draws as it scrolls through the viewport
+        // Per-path scrub: the draw amount follows scroll while the path is in view
         for (const info of infos) {
           const { el, len } = info;
-          
-          // Create a tween for this specific path
-          const tween = gsap.fromTo(el, 
-            { strokeDashoffset: len }, // start fully hidden
-            { strokeDashoffset: 0, ease: "none", paused: true }
-          );
-          
+          const tween = gsap.to(el, {
+            strokeDashoffset: 0,
+            ease: "none",
+            paused: true, // we'll drive progress from ScrollTrigger
+          });
           const st = ScrollTrigger.create({
             trigger: el,
-            start: `top+=${nearTopPx} bottom`, // start when path top hits bottom of viewport
-            end: `bottom+=${nearTopPx} top`, // end when path bottom hits top of viewport
-            scrub: 0.5, // smooth scrubbing with slight delay
-            onUpdate: (self) => {
-              // Tie drawing progress directly to scroll progress
-              tween.progress(self.progress);
-            },
-            onEnter: () => {
-              // Ensure path is ready to draw
-              tween.progress(0);
-            },
-            onEnterBack: () => {
-              // Handle reverse scrolling
-              tween.progress(0);
-            }
+            start: `top+=${nearTopPx} top`,
+            end: "bottom top",
+            scrub: true,
+            onUpdate: (self) => tween.progress(self.progress),
           });
           cleanup.push(() => st.kill(), () => tween.kill());
         }
