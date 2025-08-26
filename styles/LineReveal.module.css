@@ -1,0 +1,35 @@
+.heroLine {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.heroLine::before {
+  content: 'Loading SVG...';
+  color: #666;
+  font-style: italic;
+  opacity: 0.7;
+}
+
+/* Hide placeholder content when SVG is loaded */
+.heroLine.loaded::before {
+  display: none;
+}
+
+.heroLine.loaded {
+  background: transparent;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .heroLine {
+    max-width: 100%;
+    min-height: 250px;
+  }
+}

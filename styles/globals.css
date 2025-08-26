@@ -1,0 +1,55 @@
+/* Global styles */
+:root {
+  --line-stroke: currentColor;
+  --line-width: 2.5;
+  --line-opacity: 1;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f8f9fa;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* SVG Line Animation Styles */
+[data-line-reveal] {
+  display: block;
+  max-width: 1200px;
+  width: 100%;
+  height: auto;
+  margin-inline: auto;
+  opacity: var(--line-opacity);
+}
+
+[data-line-reveal] path {
+  stroke: var(--line-stroke);
+  stroke-width: var(--line-width);
+  fill: none;
+  vector-effect: non-scaling-stroke;
+  transition: stroke-dashoffset 1.2s ease-out;
+}
+
+/* Accessibility: Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  [data-line-reveal] path {
+    transition: none !important;
+  }
+}

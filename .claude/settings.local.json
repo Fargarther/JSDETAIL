@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(move ImagesSingle_line_design.svg public )",
+      "Bash(npm audit:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": [],
     "ask": []
