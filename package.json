@@ -1,5 +1,5 @@
 {
-  "name": "jsdetail-nextjs",
+  "name": "jsdetail-nextjs-gsap",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,12 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "^14.2.32",
+    "gsap": "^3.12.2",
+    "next": "14.2.32",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@types/gsap": "^3.0.0",
+    "@types/node": "20.19.11",
+    "@types/react": "18.3.24",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.0.1",
     "eslint": "^8",
-    "eslint-config-next": "14.2.5"
+    "eslint-config-next": "14.2.32",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.0",
+    "typescript": "5.9.2"
   }
 }
