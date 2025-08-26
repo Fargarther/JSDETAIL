@@ -23,7 +23,7 @@ export default function Page() {
         <SvgLine 
           src="/Images/Single_line_design.svg" 
           nearTopPx={120} 
-          scrub={false}
+          scrub={true}
           stroke="currentColor"
           strokeWidth={2}
         />
