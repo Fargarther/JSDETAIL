@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draw-on-Scroll SVG Line Animation</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <header>
+        <h1>SVG Line Animation Demo</h1>
+    </header>
+    
+    <section class="hero">
+        <div id="hero-line"
+             data-line-placeholder
+             data-scrub="false"
+             aria-hidden="true"></div>
+    </section>
+    
+    <section class="content">
+        <h2>Scroll to see the line animation</h2>
+        <p>This demonstration shows how SVG paths can be animated as you scroll down the page.</p>
+        <p>The animation uses the stroke-dasharray and stroke-dashoffset technique to create a drawing effect.</p>
+        <p>Keep scrolling to see more content...</p>
+        
+        <div style="height: 100vh; background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; margin: 2rem 0;">
+            <h3>More content here</h3>
+        </div>
+        
+        <div style="height: 100vh; background: linear-gradient(-45deg, #e0e0e0, #d0d0d0); display: flex; align-items: center; justify-content: center; margin: 2rem 0;">
+            <h3>Even more content</h3>
+        </div>
+        
+        <div style="height: 50vh; background: linear-gradient(90deg, #d0d0d0, #c0c0c0); display: flex; align-items: center; justify-content: center; margin: 2rem 0;">
+            <h3>Final section</h3>
+        </div>
+    </section>
+    
+    <script defer src="/js/main.js"></script>
+</body>
+</html>
