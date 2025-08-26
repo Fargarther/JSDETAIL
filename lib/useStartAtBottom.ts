@@ -20,10 +20,23 @@ export function useStartAtBottom() {
       top: document.documentElement.scrollHeight 
     });
 
+    const refreshScrollTrigger = async () => {
+      try {
+        const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+        ScrollTrigger.refresh();
+      } catch {}
+    };
+
     requestAnimationFrame(() => {
       scrollToBottom();
-      setTimeout(scrollToBottom, 50);
-      setTimeout(scrollToBottom, 250);
+      setTimeout(() => {
+        scrollToBottom();
+        refreshScrollTrigger();
+      }, 100);
+      setTimeout(() => {
+        scrollToBottom();
+        refreshScrollTrigger();
+      }, 500);
     });
   }, []);
 }

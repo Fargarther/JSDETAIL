@@ -9,7 +9,9 @@
       "Bash(timeout:*)",
       "Bash(npm install)",
       "Bash(npx tailwindcss init:*)",
-      "WebFetch(domain:www.youtube.com)"
+      "WebFetch(domain:www.youtube.com)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run lint)"
     ],
     "deny": [],
     "ask": []

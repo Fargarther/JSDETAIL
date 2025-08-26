@@ -34,28 +34,34 @@ export default function RevealTop({
 
     // Dynamic import GSAP client-side
     let ctx: { revert: () => void } | null = null;
-    (async () => {
+    const initAnimation = async () => {
       const { gsap } = await import("gsap");
       const { ScrollTrigger } = await import("gsap/ScrollTrigger");
       gsap.registerPlugin(ScrollTrigger);
 
-      ctx = gsap.context(() => {
-        gsap.set(ref.current, { opacity: 0, y: -16 });
+      // Wait for initial scroll positioning to complete
+      setTimeout(() => {
+        ctx = gsap.context(() => {
+          gsap.set(ref.current, { opacity: 0, y: -16 });
 
-        gsap.to(ref.current, {
-          opacity: 1,
-          y: 0,
-          duration,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: ref.current!,
-            start: `top+=${thresholdTopPx} top`, // when element top is near viewport top
-            toggleActions: once ? "play none none none" : "play none none reverse",
-            once,
-          },
-        });
-      }, ref);
-    })();
+          gsap.to(ref.current, {
+            opacity: 1,
+            y: 0,
+            duration,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: ref.current!,
+              start: `top+=${thresholdTopPx} top`,
+              toggleActions: once ? "play none none none" : "play none none reverse",
+              once,
+              refreshPriority: -1, // Lower priority to ensure proper calculation order
+            },
+          });
+        }, ref);
+      }, 600); // Match the delay from useStartAtBottom
+    };
+    
+    initAnimation();
 
     return () => { 
       ctx?.revert?.(); 
