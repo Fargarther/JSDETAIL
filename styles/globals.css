@@ -53,3 +53,24 @@ a {
     transition: none !important;
   }
 }
+
+/* Slide-in animation from top */
+.reveal-top {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 600ms ease, transform 600ms ease;
+  will-change: opacity, transform;
+}
+
+.reveal-top.is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-top {
+    transition: none;
+    transform: none;
+    opacity: 1;
+  }
+}

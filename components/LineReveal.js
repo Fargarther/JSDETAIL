@@ -73,6 +73,28 @@ export default function LineReveal({ scrubMode = false }) {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
   }, [])
 
+  // Setup reveal-from-top animation for other content
+  useEffect(() => {
+    const revealElements = document.querySelectorAll('.reveal-top')
+    if (revealElements.length === 0) return
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.classList.contains('is-in')) {
+          entry.target.classList.add('is-in')
+          revealObserver.unobserve(entry.target)
+        }
+      })
+    }, {
+      rootMargin: '0% 0% -80% 0%',
+      threshold: 0
+    })
+
+    revealElements.forEach(el => revealObserver.observe(el))
+
+    return () => revealObserver.disconnect()
+  }, [])
+
   return (
     <div 
       ref={containerRef}
@@ -131,7 +153,7 @@ async function inlineExternalSVG(url, mountEl) {
 }
 
 /**
- * Prepare all paths for animation
+ * Prepare all paths for animation - prevents flicker by disabling transitions initially
  */
 function prepPaths(svg) {
   const paths = []
@@ -146,7 +168,8 @@ function prepPaths(svg) {
     try {
       const length = path.getTotalLength()
       
-      // Set initial dash properties
+      // PREVENT FLICKER: Disable transition while setting initial values
+      path.style.transition = 'none'
       path.style.strokeDasharray = length
       path.style.strokeDashoffset = length
       path.style.fill = 'none'
@@ -167,11 +190,17 @@ function prepPaths(svg) {
     }
   })
 
+  // Force reflow then re-enable transitions for animation
+  svg.getBoundingClientRect()
+  targetPaths.forEach(path => {
+    path.style.transition = 'stroke-dashoffset 1.2s ease-out'
+  })
+
   return paths
 }
 
 /**
- * Setup trigger mode - animate once when element enters viewport
+ * Setup trigger mode - animate when SVG approaches TOP of viewport
  */
 function setupTriggerMode(svg, pathData, observers) {
   if (!('IntersectionObserver' in window)) {
@@ -179,22 +208,25 @@ function setupTriggerMode(svg, pathData, observers) {
     return
   }
 
-  // Create threshold array for smooth detection
-  const thresholds = []
-  for (let i = 0; i <= 20; i++) {
-    thresholds.push(i / 20)
-  }
-
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.intersectionRatio >= 0.25 && !svg.hasAttribute('data-drawn')) {
-        animatePathsWithStagger(pathData)
-        observer.unobserve(entry.target)
+      if (entry.isIntersecting && !svg.hasAttribute('data-drawn')) {
+        // Check if element's top is near the top of viewport (within 20% of viewport height)
+        const rect = entry.boundingClientRect
+        const viewportHeight = window.innerHeight
+        const isNearTop = rect.top <= viewportHeight * 0.2
+        
+        if (isNearTop) {
+          animatePathsWithStagger(pathData)
+          observer.unobserve(entry.target)
+        }
       }
     })
   }, {
-    threshold: thresholds,
-    rootMargin: '0px'
+    // This rootMargin triggers when element is 80% above the bottom of viewport
+    // Effectively means: trigger when element approaches the top 20% of viewport
+    rootMargin: '0% 0% -80% 0%',
+    threshold: [0, 0.1]
   })
 
   observer.observe(svg)
