@@ -3,6 +3,7 @@
 import SvgLine from "@/components/SvgLine";
 import RevealTop from "@/components/RevealTop";
 import { useStartAtBottom } from "@/lib/useStartAtBottom";
+import ScrollUpHint from "@/components/ScrollUpHint";
 
 // Client-only boot wrapper to trigger "start at bottom"
 function ClientBoot() {
@@ -14,6 +15,7 @@ export default function Page() {
   return (
     <main className="min-h-[200vh] px-4 pb-40">
       <ClientBoot />
+      <ScrollUpHint />
 
       {/* Top spacer so there's room to scroll up from bottom */}
       <section className="h-[80vh]" />

@@ -34,37 +34,47 @@ export default function RevealTop({
 
     // Dynamic import GSAP client-side
     let ctx: { revert: () => void } | null = null;
+    let removeListener: (() => void) | null = null;
     const initAnimation = async () => {
       const { gsap } = await import("gsap");
       const { ScrollTrigger } = await import("gsap/ScrollTrigger");
       gsap.registerPlugin(ScrollTrigger);
 
-      // Wait for initial scroll positioning to complete
-      setTimeout(() => {
-        ctx = gsap.context(() => {
-          gsap.set(ref.current, { opacity: 0, y: -16 });
+      // Set initial hidden state immediately to avoid flash
+      if (ref.current) {
+        ref.current.style.opacity = "0";
+        ref.current.style.transform = "translateY(-16px)";
+      }
 
-          gsap.to(ref.current, {
-            opacity: 1,
-            y: 0,
-            duration,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: ref.current!,
-              start: `top+=${thresholdTopPx} top`,
-              toggleActions: once ? "play none none none" : "play none none reverse",
-              once,
-              refreshPriority: -1, // Lower priority to ensure proper calculation order
-            },
-          });
-        }, ref);
-      }, 600); // Match the delay from useStartAtBottom
+      ctx = gsap.context(() => {
+        gsap.to(ref.current, {
+          opacity: 1,
+          y: 0,
+          duration,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ref.current!,
+            start: `top+=${thresholdTopPx} top`,
+            toggleActions: once ? "play none none none" : "play none none reverse",
+            once,
+            refreshPriority: -1, // Lower priority to ensure proper calculation order
+          },
+        });
+      }, ref);
+
+      // Refresh when the page reports it has settled at the bottom
+      const onBottomPositioned = () => {
+        try { ScrollTrigger.refresh(); } catch {}
+      };
+      window.addEventListener("bottom-positioned", onBottomPositioned);
+      removeListener = () => window.removeEventListener("bottom-positioned", onBottomPositioned);
     };
-    
+
     initAnimation();
 
-    return () => { 
-      ctx?.revert?.(); 
+    return () => {
+      ctx?.revert?.();
+      removeListener?.();
     };
   }, [thresholdTopPx, once, duration]);
 

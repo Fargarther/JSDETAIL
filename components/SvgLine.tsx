@@ -55,13 +55,19 @@ export default function SvgLine({
 
       // Fetch + inline SVG
       const res = await fetch(src, { cache: "force-cache" });
-      if (!res.ok) return;
+      if (!res.ok) {
+        console.warn("SvgLine: failed to fetch", src, res.status, res.statusText);
+        return;
+      }
       const svgText = await res.text();
       if (killed) return;
 
       wrapperRef.current.innerHTML = svgText;
       const svg = wrapperRef.current.querySelector("svg") as SVGSVGElement | null;
-      if (!svg) return;
+      if (!svg) {
+        console.warn("SvgLine: no <svg> root found in", src);
+        return;
+      }
 
       svg.setAttribute("data-line-reveal", "");
       
@@ -76,7 +82,11 @@ export default function SvgLine({
       }
 
       const paths = Array.from(svg.querySelectorAll("path")) as SVGPathElement[];
-      if (!paths.length) { setReady(true); return; }
+      if (!paths.length) { 
+        console.warn("SvgLine: no <path> elements found in", src);
+        setReady(true); 
+        return; 
+      }
 
       // Reduced motion: draw immediately
       const reduced =
@@ -274,18 +284,15 @@ export default function SvgLine({
         }
       }
 
-      // Refresh after layout and initial scroll positioning
-      const delayedRefresh = () => {
-        setTimeout(() => {
-          try { 
-            ScrollTrigger.refresh(true); // force recalculation
-          } catch {}
-        }, 600); // Wait for useStartAtBottom to complete
+      // Refresh now that triggers are created, and again when the page settles at bottom
+      try { 
+        ScrollTrigger.refresh(true); 
+      } catch {}
+      const onBottomPositioned = () => {
+        try { ScrollTrigger.refresh(true); } catch {}
       };
-
-      requestAnimationFrame(() => {
-        delayedRefresh();
-      });
+      window.addEventListener("bottom-positioned", onBottomPositioned);
+      cleanup.push(() => window.removeEventListener("bottom-positioned", onBottomPositioned));
 
       setReady(true);
     })();
