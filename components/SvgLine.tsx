@@ -11,6 +11,12 @@ type Props = {
   scrub?: boolean;            // tie each path's draw to scroll while in view
   once?: boolean;             // play once and don't reverse (default true)
   groupByRowPx?: number;      // group paths whose bbox.y are within this px (optional)
+  invert?: boolean;           // if true, progress increases when scrolling up
+  unifiedTimeline?: boolean;  // if true, scrub a single timeline for all paths
+  scrubSmoothing?: number;    // when scrub is true, smoothing amount (default 0.5)
+  pin?: boolean;              // if true, pin during scrub to keep in view
+  scrollMultiplier?: number;  // multiplier for viewport height when pinning (default 2)
+  scrollDistancePx?: number;  // explicit scroll distance when pinning (overrides multiplier)
 };
 
 type PathInfo = {
@@ -32,6 +38,13 @@ export default function SvgLine({
 }: Props) {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const [ready, setReady] = useState(false);
+  const __opts = (arguments as IArguments)[0] as Props | undefined;
+  const invert = __opts?.invert ?? false;
+  const unifiedTimeline = __opts?.unifiedTimeline ?? false;
+  const scrubSmoothing = __opts?.scrubSmoothing ?? 0.5;
+  const pin = __opts?.pin ?? false;
+  const scrollMultiplier = __opts?.scrollMultiplier ?? 2;
+  const scrollDistancePx = __opts?.scrollDistancePx;
 
   useEffect(() => {
     let killed = false;
@@ -148,7 +161,42 @@ export default function SvgLine({
         return { t, st };
       };
 
-      if (scrub) {
+      if (scrub && unifiedTimeline) {
+        // Single timeline scrub: map scroll progress to a single TL covering all paths
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "none" } });
+        const ordered = [...infos].sort((a, b) => a.bboxTop - b.bboxTop);
+        if (invert) ordered.reverse();
+        const totalLen = ordered.reduce((acc, it) => acc + (it.len || 0), 0) || 1;
+        for (const info of ordered) {
+          const dur = info.len / totalLen; // proportional to length for constant draw rate
+          tl.to(info.el, { strokeDashoffset: 0, duration: dur }, ">");
+        }
+        // Compute extended scroll distance when pinning
+        const desiredDist = scrollDistancePx ?? Math.round(scrollMultiplier * (window.innerHeight || 800));
+        const st = ScrollTrigger.create({
+          trigger: svg,
+          start: `top bottom`,
+          end: pin ? `+=${desiredDist}` : `bottom top`,
+          scrub: scrubSmoothing,
+          pin: pin || undefined,
+          anticipatePin: pin ? 1 : undefined,
+          onEnter: () => {
+            if (!once || tl.progress() === 0) tl.progress(0);
+          },
+          onEnterBack: () => {
+            if (!once) tl.progress(0);
+          },
+          onUpdate: (self) => {
+            const mapped = invert ? 1 - self.progress : self.progress;
+            if (!once) {
+              tl.progress(mapped);
+            } else if (mapped > tl.progress()) {
+              tl.progress(mapped);
+            }
+          },
+        });
+        cleanup.push(() => st.kill(), () => tl.kill());
+      } else if (scrub) {
         // Per-path scrub: the draw amount follows scroll while the path is in view
         for (const info of infos) {
           const { el, len } = info;
@@ -159,10 +207,29 @@ export default function SvgLine({
           });
           const st = ScrollTrigger.create({
             trigger: el,
-            start: `top+=${nearTopPx} top`,
-            end: "bottom top",
-            scrub: true,
-            onUpdate: (self) => tween.progress(self.progress),
+            start: `top bottom`,
+            end: `bottom top`,
+            scrub: scrubSmoothing,
+            onEnter: () => {
+              if (!once || tween.progress() === 0) {
+                tween.progress(0);
+              }
+            },
+            onEnterBack: () => {
+              if (!once) {
+                tween.progress(0);
+              }
+            },
+            onUpdate: (self) => {
+              const mapped = invert ? 1 - self.progress : self.progress;
+              if (!once) {
+                // Bidirectional when replay is allowed
+                tween.progress(mapped);
+              } else if (mapped > tween.progress()) {
+                // Forward-only progress: never decrease tween progress
+                tween.progress(mapped);
+              }
+            },
           });
           cleanup.push(() => st.kill(), () => tween.kill());
         }
@@ -230,7 +297,7 @@ export default function SvgLine({
         try { fn(); } catch {}
       }
     };
-  }, [src, nearTopPx, stroke, strokeWidth, decorative, scrub, once, groupByRowPx]);
+  }, [src, nearTopPx, stroke, strokeWidth, decorative, scrub, once, groupByRowPx, invert, unifiedTimeline, scrubSmoothing]);
 
   return (
     <div

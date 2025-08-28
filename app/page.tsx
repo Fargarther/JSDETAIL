@@ -24,7 +24,12 @@ export default function Page() {
           src="/Images/Single_line_design.svg" 
           nearTopPx={120}
           scrub={true}
-          once={false}
+          once={true}
+          invert={true}
+          unifiedTimeline={true}
+          scrubSmoothing={0.2}
+          pin={true}
+          scrollMultiplier={3}
           stroke="currentColor"
           strokeWidth={2}
         />
