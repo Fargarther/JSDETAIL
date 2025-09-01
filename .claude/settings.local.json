@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(move ImagesSingle_line_design.svg public )",
+      "Bash(npm audit:*)",
+      "Bash(npm run dev:*)",
+      "Bash(python:*)",
+      "Bash(timeout:*)",
+      "Bash(npm install)",
+      "Bash(npx tailwindcss init:*)",
+      "WebFetch(domain:www.youtube.com)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run lint)",
+      "Bash(rm:*)",
+      "Bash(npx create-next-app:*)",
+      "Bash(npm init:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
