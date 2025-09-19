@@ -406,11 +406,29 @@ export default function Home() {
       return;
     }
 
+    const removeInlineDash = (segment: SVGPathElement) => {
+      segment.style.removeProperty('stroke-dasharray');
+      segment.style.removeProperty('stroke-dashoffset');
+    };
+
+    const handleTransitionEnd = (event: TransitionEvent) => {
+      if (event.propertyName !== 'stroke-dashoffset') {
+        return;
+      }
+      const target = event.currentTarget as SVGPathElement | null;
+      if (!target) {
+        return;
+      }
+      removeInlineDash(target);
+      target.removeEventListener('transitionend', handleTransitionEnd);
+    };
+
     const primeSegments = segments.map((segment) => {
       const length = segment.getTotalLength();
       segment.style.setProperty('--ratio-segment-length', `${length}`);
       segment.style.strokeDasharray = `${length}`;
       segment.style.strokeDashoffset = `${length}`;
+      segment.addEventListener('transitionend', handleTransitionEnd);
       return segment;
     });
 
@@ -418,9 +436,9 @@ export default function Home() {
       setRatioSegmentsDrawn(false);
       return () => {
         primeSegments.forEach((segment) => {
+          segment.removeEventListener('transitionend', handleTransitionEnd);
           segment.style.removeProperty('--ratio-segment-length');
-          segment.style.strokeDasharray = '';
-          segment.style.strokeDashoffset = '';
+          removeInlineDash(segment);
         });
       };
     }
@@ -432,9 +450,9 @@ export default function Home() {
     return () => {
       cancelAnimationFrame(animationFrame);
       primeSegments.forEach((segment) => {
+        segment.removeEventListener('transitionend', handleTransitionEnd);
         segment.style.removeProperty('--ratio-segment-length');
-        segment.style.strokeDasharray = '';
-        segment.style.strokeDashoffset = '';
+        removeInlineDash(segment);
       });
       setRatioSegmentsDrawn(false);
     };
