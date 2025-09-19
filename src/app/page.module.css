@@ -1,10 +1,21 @@
 .header {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 20;
+  left: 0;
+  width: 100%;
+  z-index: 40;
+  transform: translateY(-100%);
+  transition: transform 0.4s ease, box-shadow 0.3s ease;
   backdrop-filter: blur(12px);
   background: rgba(9, 9, 9, 0.85);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+.headerVisible {
+  transform: translateY(0);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  pointer-events: auto;
 }
 
 .headerInner {
@@ -24,8 +35,8 @@
 
 .logoWrap {
   position: relative;
-  width: 220px;
-  height: 60px;
+  width: clamp(50px, 4.5vw, 65px);
+  aspect-ratio: 16 / 9;
 }
 
 .nav {
@@ -114,10 +125,65 @@
 }
 
 .heroSpiral {
-  object-fit: contain;
-  opacity: 0.45;
-  mix-blend-mode: screen;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
+  color: rgba(255, 255, 255, 0.28);
+  mix-blend-mode: screen;
+}
+
+.heroSpiralSvg {
+  width: 100%;
+  height: 100%;
+}
+
+.heroRatioBoxes {
+  opacity: 0.08;
+  stroke-width: 1;
+}
+
+.heroRatioFrame {
+  stroke-width: 1.5;
+  opacity: 0;
+  stroke-dasharray: var(--ratio-frame-length, 4000);
+  stroke-dashoffset: var(--ratio-frame-length, 4000);
+  transition: stroke-dashoffset 1.8s ease-out, opacity 0.6s ease-out;
+}
+
+.heroRatioFrameActive {
+  stroke-dashoffset: 0;
+  opacity: 0.65;
+}
+
+.heroRatioSegment {
+  stroke-width: 1.5;
+  opacity: 0;
+  stroke-dasharray: var(--ratio-segment-length, 400);
+  stroke-dashoffset: var(--ratio-segment-length, 400);
+  transition: stroke-dashoffset 0.9s ease-out, opacity 0.45s ease-out;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.heroRatioSegmentActive {
+  stroke-dashoffset: 0;
+  opacity: 0.65;
+  stroke: currentColor;
+}
+.heroRatioSpiral {
+  stroke-width: 1.5;
+  opacity: 0;
+  stroke-dasharray: var(--spiral-length, 4000);
+  stroke-dashoffset: var(--spiral-length, 4000);
+  transition: stroke-dashoffset 2.6s ease-out, opacity 0.6s ease-out;
+}
+
+.heroSpiralActive {
+  stroke-dashoffset: 0;
+  opacity: 1;
 }
 
 .primaryButton,
@@ -482,9 +548,14 @@
 
 .logoWrapSmall {
   position: relative;
-  width: 160px;
-  height: 48px;
+  width: clamp(180px, 32vw, 220px);
+  aspect-ratio: 16 / 9;
   margin-bottom: 12px;
+}
+
+
+.logoImage {
+  object-fit: contain;
 }
 
 .footerNav,
@@ -567,3 +638,9 @@
     padding: 0 20px;
   }
 }
+
+
+
+
+
+
