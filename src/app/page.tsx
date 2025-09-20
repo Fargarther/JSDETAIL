@@ -490,7 +490,7 @@ export default function Home() {
     if (!frameDrawn || !ratioSegmentsDrawn || !spiralDrawn) {
       return;
     }
-    const timeout = window.setTimeout(() => setOverlayActive(true), 220);
+    const timeout = window.setTimeout(() => setOverlayActive(true), 2200);
     return () => {
       window.clearTimeout(timeout);
     };
@@ -857,6 +857,7 @@ export default function Home() {
     </>
   );
 }
+
 
 
 

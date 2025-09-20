@@ -255,6 +255,8 @@ export default function FlavorWordsOverlay({
 
   const overlayClassName = [styles.overlay, className].filter(Boolean).join(" ");
   const overlayStyle: CSSProperties & { "--radius"?: string } = {};
+  const baseDelay = 0.4;
+  const delayStep = 0.28;
 
   if (typeof radius === "number") {
     overlayStyle["--radius"] = `${radius}px`;
@@ -271,9 +273,11 @@ export default function FlavorWordsOverlay({
     >
       <div className={styles.blurLayer} aria-hidden>
         {normalizedWords.map((word, index) => {
-          const wordStyle: CSSProperties & { "--w"?: string } = {
+          const delay = (baseDelay + index * delayStep).toFixed(2);
+          const wordStyle: CSSProperties & { "--w"?: string; "--delay"?: string } = {
             ...word.style,
             "--w": word.weight.toFixed(2),
+            "--delay": `${delay}s`,
           };
           return (
             <span
@@ -288,9 +292,11 @@ export default function FlavorWordsOverlay({
       </div>
       <div className={styles.sharpLayer} aria-hidden>
         {normalizedWords.map((word, index) => {
-          const wordStyle: CSSProperties & { "--w"?: string } = {
+          const delay = (baseDelay + index * delayStep).toFixed(2);
+          const wordStyle: CSSProperties & { "--w"?: string; "--delay"?: string } = {
             ...word.style,
             "--w": word.weight.toFixed(2),
+            "--delay": `${delay}s`,
           };
           return (
             <span
@@ -306,3 +312,8 @@ export default function FlavorWordsOverlay({
     </div>
   );
 }
+
+
+
+
+
