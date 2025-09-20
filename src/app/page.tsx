@@ -5,6 +5,8 @@ import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 
+import FlavorWordsOverlay from "@/components/FlavorWordsOverlay";
+
 const navLinks = [
   { href: "#home", label: "Home" },
   { href: "#services", label: "Services" },
@@ -12,6 +14,8 @@ const navLinks = [
   { href: "#about", label: "About" },
   { href: "#contact", label: "Contact" },
 ];
+
+const HERO_FLAVOR_WORDS = ["Cinematic", "Precise", "Adaptive", "Human", "Scalable"];
 
 const RATIO_SEGMENTS = [
   { d: 'M1 997L1205 997', delay: 0.05 },
@@ -571,6 +575,7 @@ export default function Home() {
                 </svg>
               </div>
             </div>
+            <FlavorWordsOverlay words={HERO_FLAVOR_WORDS} />
           </div>
         </section>
         <section className={joinClasses(styles.section, styles.introSection)}>

@@ -1,0 +1,96 @@
+.overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  contain: layout paint;
+  --mx: -999px;
+  --my: -999px;
+  --dx: 0;
+  --dy: 0;
+  --radius: 140px;
+  --blur-strength: 8px;
+  --parallax-scale: 18px;
+}
+
+.blurLayer,
+.sharpLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.blurLayer {
+  filter: blur(var(--blur-strength));
+  opacity: 0.75;
+}
+
+.sharpLayer {
+  -webkit-mask-image: radial-gradient(
+    circle var(--radius) at var(--mx) var(--my),
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.85) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: radial-gradient(
+    circle var(--radius) at var(--mx) var(--my),
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.85) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.word {
+  position: absolute;
+  font-size: clamp(0.9rem, 1.9vw, 1.4rem);
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(249, 246, 237, 0.96);
+  text-shadow:
+    0 1px 6px rgba(0, 0, 0, 0.45),
+    0 0 22px rgba(0, 0, 0, 0.6);
+  transform: translate3d(
+    calc(var(--dx) * var(--w) * var(--parallax-scale)),
+    calc(var(--dy) * var(--w) * var(--parallax-scale)),
+    0
+  );
+  transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1);
+  will-change: transform;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.blurLayer .word {
+  transition: none;
+  opacity: 0.8;
+}
+
+.overlay[data-motion="reduced"] .sharpLayer {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.overlay[data-motion="reduced"] .word {
+  transform: none;
+  transition: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .word {
+    color: rgba(255, 255, 255, 0.94);
+    text-shadow:
+      0 2px 10px rgba(0, 0, 0, 0.65),
+      0 0 28px rgba(0, 0, 0, 0.7);
+  }
+}
+
+@media (pointer: coarse) {
+  .overlay[data-hide-coarse="true"] {
+    display: none;
+  }
+}
