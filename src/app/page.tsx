@@ -344,7 +344,7 @@ const socialLinks = [
 ];
 
 const joinClasses = (
-  ...classes: Array<string | false | null | undefined>,
+  ...classes: Array<string | false | null | undefined>
 ) => classes.filter(Boolean).join(" ");
 export default function Home() {
   const heroRef = useRef<HTMLElement | null>(null);
@@ -355,6 +355,7 @@ export default function Home() {
   const [frameDrawn, setFrameDrawn] = useState(false);
   const ratioSegmentRefs = useRef<Array<SVGPathElement | null>>([]);
   const [ratioSegmentsDrawn, setRatioSegmentsDrawn] = useState(false);
+  const [overlayActive, setOverlayActive] = useState(false);
   const [formStatus, setFormStatus] = useState<"idle" | "success">("idle");
 
   useEffect(() => {
@@ -485,6 +486,16 @@ export default function Home() {
 
 
 
+  useEffect(() => {
+    if (!frameDrawn || !ratioSegmentsDrawn || !spiralDrawn) {
+      return;
+    }
+    const timeout = window.setTimeout(() => setOverlayActive(true), 220);
+    return () => {
+      window.clearTimeout(timeout);
+    };
+  }, [frameDrawn, ratioSegmentsDrawn, spiralDrawn]);
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -575,7 +586,11 @@ export default function Home() {
                 </svg>
               </div>
             </div>
-            <FlavorWordsOverlay words={HERO_FLAVOR_WORDS} />
+            <FlavorWordsOverlay
+              className={styles.heroFlavorOverlay}
+              words={HERO_FLAVOR_WORDS}
+              active={overlayActive}
+            />
           </div>
         </section>
         <section className={joinClasses(styles.section, styles.introSection)}>

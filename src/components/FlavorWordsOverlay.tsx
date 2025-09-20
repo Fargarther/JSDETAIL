@@ -16,6 +16,7 @@ export type FlavorWordsOverlayProps = {
   radius?: number;
   hideOnCoarse?: boolean;
   className?: string;
+  active?: boolean;
 };
 
 type NormalizedWord = {
@@ -24,13 +25,13 @@ type NormalizedWord = {
   weight: number;
 };
 
-const DEFAULT_WEIGHT = 0.8;
+const DEFAULT_WEIGHT = 0.85;
 const PRESET_POSITIONS: Array<Omit<PositionedWord, "text">> = [
-  { style: { top: "6%", left: "12%" }, weight: 1.1 },
-  { style: { top: "18%", right: "14%" }, weight: 0.65 },
-  { style: { bottom: "24%", left: "14%" }, weight: 0.85 },
-  { style: { bottom: "12%", right: "10%" }, weight: 1.2 },
-  { style: { top: "54%", right: "4%" }, weight: 0.5 },
+  { style: { top: "12%", left: "14%" }, weight: 1.2 },
+  { style: { top: "28%", right: "16%" }, weight: 0.55 },
+  { style: { bottom: "24%", left: "18%" }, weight: 0.9 },
+  { style: { bottom: "14%", right: "14%" }, weight: 1.35 },
+  { style: { top: "58%", right: "12%" }, weight: 0.45 },
 ];
 const MAX_PRESET_COUNT = PRESET_POSITIONS.length;
 
@@ -74,6 +75,7 @@ export default function FlavorWordsOverlay({
   radius,
   hideOnCoarse = true,
   className,
+  active = true,
 }: FlavorWordsOverlayProps) {
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const normalizedWords = useMemo(() => normalizeWords(words), [words]);
@@ -86,22 +88,50 @@ export default function FlavorWordsOverlay({
     }
 
     let frame = 0;
+    let pointerCaptured = false;
     let prefersReducedMotion = false;
-    let pointerActive = false;
-    const pointer = { x: 0, y: 0 };
+    const pointer = {
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+    };
     const bounds = { left: 0, top: 0, width: 0, height: 0 };
+    const viewport = {
+      width: window.innerWidth || 1,
+      height: window.innerHeight || 1,
+    };
+
+    const updateBounds = () => {
+      const rect = overlay.getBoundingClientRect();
+      bounds.left = rect.left;
+      bounds.top = rect.top;
+      bounds.width = rect.width;
+      bounds.height = rect.height;
+    };
+
+    const updateViewport = () => {
+      viewport.width = window.innerWidth || 1;
+      viewport.height = window.innerHeight || 1;
+    };
+
+    const parkReveal = () => {
+      pointerCaptured = false;
+      if (prefersReducedMotion) {
+        return;
+      }
+      overlay.style.setProperty("--mx", "-999px");
+      overlay.style.setProperty("--my", "-999px");
+      overlay.style.setProperty("--dx", "0");
+      overlay.style.setProperty("--dy", "0");
+    };
 
     const applyFrame = () => {
       frame = 0;
-      if (!pointerActive || prefersReducedMotion) {
+      if (!pointerCaptured || prefersReducedMotion) {
         return;
       }
 
       const relativeX = pointer.x - bounds.left;
       const relativeY = pointer.y - bounds.top;
-      if (bounds.width === 0 || bounds.height === 0) {
-        return;
-      }
 
       const clampedX = clamp(relativeX, 0, bounds.width);
       const clampedY = clamp(relativeY, 0, bounds.height);
@@ -109,8 +139,9 @@ export default function FlavorWordsOverlay({
       overlay.style.setProperty("--mx", `${clampedX}px`);
       overlay.style.setProperty("--my", `${clampedY}px`);
 
-      const normalizedX = clamp((clampedX / bounds.width) * 2 - 1, -1, 1);
-      const normalizedY = clamp((clampedY / bounds.height) * 2 - 1, -1, 1);
+      const normalizedX = clamp((pointer.x / viewport.width) * 2 - 1, -1, 1);
+      const normalizedY = clamp((pointer.y / viewport.height) * 2 - 1, -1, 1);
+
       overlay.style.setProperty("--dx", normalizedX.toFixed(4));
       overlay.style.setProperty("--dy", normalizedY.toFixed(4));
     };
@@ -122,48 +153,11 @@ export default function FlavorWordsOverlay({
       frame = window.requestAnimationFrame(applyFrame);
     };
 
-    const parkReveal = () => {
-      pointerActive = false;
-      if (prefersReducedMotion) {
-        return;
-      }
-      overlay.style.setProperty("--mx", "-999px");
-      overlay.style.setProperty("--my", "-999px");
-      overlay.style.setProperty("--dx", "0");
-      overlay.style.setProperty("--dy", "0");
-    };
-
-    const updateBounds = () => {
-      const rect = overlay.getBoundingClientRect();
-      bounds.left = rect.left;
-      bounds.top = rect.top;
-      bounds.width = rect.width;
-      bounds.height = rect.height;
-      if (pointerActive && !prefersReducedMotion) {
-        scheduleFrame();
-      }
-    };
-
     const handlePointerMove = (event: PointerEvent) => {
+      pointerCaptured = true;
       pointer.x = event.clientX;
       pointer.y = event.clientY;
-
-      if (prefersReducedMotion) {
-        return;
-      }
-
-      const withinX =
-        pointer.x >= bounds.left && pointer.x <= bounds.left + bounds.width;
-      const withinY =
-        pointer.y >= bounds.top && pointer.y <= bounds.top + bounds.height;
-      const inside = withinX && withinY;
-
-      if (inside) {
-        pointerActive = true;
-        scheduleFrame();
-      } else if (pointerActive) {
-        parkReveal();
-      }
+      scheduleFrame();
     };
 
     const handleMouseOut = (event: MouseEvent) => {
@@ -174,14 +168,21 @@ export default function FlavorWordsOverlay({
 
     const handleScroll = () => {
       updateBounds();
+      if (pointerCaptured && !prefersReducedMotion) {
+        scheduleFrame();
+      }
     };
 
     updateBounds();
+    updateViewport();
 
     const resizeObserver =
       typeof ResizeObserver !== "undefined"
         ? new ResizeObserver(() => {
             updateBounds();
+            if (pointerCaptured && !prefersReducedMotion) {
+              scheduleFrame();
+            }
           })
         : null;
 
@@ -194,6 +195,7 @@ export default function FlavorWordsOverlay({
     window.addEventListener("pointermove", handlePointerMove, { passive: true });
     window.addEventListener("mouseout", handleMouseOut);
     window.addEventListener("scroll", handleScroll, true);
+    window.addEventListener("resize", updateViewport);
 
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const applyMotionPreference = () => {
@@ -208,6 +210,7 @@ export default function FlavorWordsOverlay({
         overlay.style.setProperty("--my", `${bounds.height / 2}px`);
         overlay.style.setProperty("--dx", "0");
         overlay.style.setProperty("--dy", "0");
+        pointerCaptured = false;
       } else {
         parkReveal();
       }
@@ -218,7 +221,6 @@ export default function FlavorWordsOverlay({
     };
 
     applyMotionPreference();
-    parkReveal();
 
     if (typeof motionQuery.addEventListener === "function") {
       motionQuery.addEventListener("change", handleMotionChange);
@@ -233,6 +235,7 @@ export default function FlavorWordsOverlay({
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("mouseout", handleMouseOut);
       window.removeEventListener("scroll", handleScroll, true);
+      window.removeEventListener("resize", updateViewport);
       if (resizeObserver) {
         resizeObserver.disconnect();
       } else {
@@ -263,13 +266,14 @@ export default function FlavorWordsOverlay({
       className={overlayClassName}
       style={overlayStyle}
       data-hide-coarse={hideOnCoarse ? "true" : "false"}
+      data-active={active ? "true" : "false"}
       aria-hidden
     >
       <div className={styles.blurLayer} aria-hidden>
         {normalizedWords.map((word, index) => {
           const wordStyle: CSSProperties & { "--w"?: string } = {
             ...word.style,
-            "--w": word.weight.toString(),
+            "--w": word.weight.toFixed(2),
           };
           return (
             <span
@@ -286,7 +290,7 @@ export default function FlavorWordsOverlay({
         {normalizedWords.map((word, index) => {
           const wordStyle: CSSProperties & { "--w"?: string } = {
             ...word.style,
-            "--w": word.weight.toString(),
+            "--w": word.weight.toFixed(2),
           };
           return (
             <span
