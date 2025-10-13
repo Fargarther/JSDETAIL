@@ -8,7 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./page.module.css";
 
 import FlavorWordsOverlay from "@/components/FlavorWordsOverlay";
-import RoundedSlantClip from "./components/RoundedSlantClip";
+import ACGClip from "./components/ACGClip";
 
 const navLinks = [
   { href: "#home", label: "Home" },
@@ -373,7 +373,7 @@ export default function Home() {
     }
 
     const context = gsap.context(() => {
-      gsap.from(`.${styles.textContent}`, {
+      gsap.from(`.${styles.promoText}`, {
         y: 80,
         opacity: 0,
         duration: 1.2,
@@ -382,6 +382,17 @@ export default function Home() {
           trigger: promoSectionRef.current,
           start: "top 80%",
           toggleActions: "play none none reverse",
+        },
+      });
+
+      gsap.from(`.${styles.videoShell}`, {
+        opacity: 0,
+        y: 100,
+        duration: 1.2,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: promoSectionRef.current,
+          start: "top 85%",
         },
       });
     }, promoSectionRef);
@@ -625,7 +636,7 @@ export default function Home() {
           </div>
         </section>
         <section ref={promoSectionRef} className={styles.promoSection}>
-          <RoundedSlantClip r={28} tlY={0} trY={80} blY={0} brY={80} className={styles.videoShell}>
+          <ACGClip topSlant={0.08} bottomSlant={0.05} radius={0.04} className={styles.videoShell}>
             <video
               className={styles.promoVideo}
               src="/Videos/pano_4k.mp4"
@@ -635,14 +646,15 @@ export default function Home() {
               playsInline
               aria-hidden="true"
             />
-            <div className={styles.overlay} />
-            <div className={styles.textContent}>
+            <div className={styles.promoOverlay} />
+            <div className={styles.promoText}>
               <h2>Full-Spectrum Visual Storytelling</h2>
               <p>
-                Sweeping aerials and intimate detail, blended with cinematic slant and soft rounded form.
+                Our adaptive geometry keeps motion dynamic — the slant flows with viewport width while maintaining
+                perfectly rounded corners.
               </p>
             </div>
-          </RoundedSlantClip>
+          </ACGClip>
         </section>
         <section className={joinClasses(styles.section, styles.introSection)}>
           <div className={styles.sectionHeading}>
