@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./page.module.css";
 
 import FlavorWordsOverlay from "@/components/FlavorWordsOverlay";
@@ -348,6 +350,7 @@ const joinClasses = (
 ) => classes.filter(Boolean).join(" ");
 export default function Home() {
   const heroRef = useRef<HTMLElement | null>(null);
+  const promoSectionRef = useRef<HTMLElement | null>(null);
   const [navVisible, setNavVisible] = useState(false);
   const spiralPathRef = useRef<SVGPathElement | null>(null);
   const [spiralDrawn, setSpiralDrawn] = useState(false);
@@ -357,6 +360,33 @@ export default function Home() {
   const [ratioSegmentsDrawn, setRatioSegmentsDrawn] = useState(false);
   const [overlayActive, setOverlayActive] = useState(false);
   const [formStatus, setFormStatus] = useState<"idle" | "success">("idle");
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+    if (!promoSectionRef.current) {
+      return;
+    }
+
+    const context = gsap.context(() => {
+      gsap.from(`.${styles.textContent}`, {
+        y: 80,
+        opacity: 0,
+        duration: 1.2,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: promoSectionRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
+      });
+    }, promoSectionRef);
+
+    return () => context.revert();
+  }, []);
 
   useEffect(() => {
     const evaluateVisibility = () => {
@@ -591,6 +621,27 @@ export default function Home() {
               words={HERO_FLAVOR_WORDS}
               active={overlayActive}
             />
+          </div>
+        </section>
+        <section ref={promoSectionRef} className={styles.promoSection}>
+          <div className={styles.videoWrap}>
+            <video
+              className={styles.promoVideo}
+              src="/Videos/pano_4k.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              aria-hidden="true"
+            />
+            <div className={styles.overlay} />
+            <div className={styles.textContent}>
+              <h2>Full-Spectrum Visual Storytelling</h2>
+              <p>
+                Watch how we blend sweeping aerial perspective with intimate ground detail to craft narratives that
+                hold attention and drive action.
+              </p>
+            </div>
           </div>
         </section>
         <section className={joinClasses(styles.section, styles.introSection)}>
