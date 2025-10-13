@@ -386,10 +386,7 @@
   padding: clamp(96px, 12vw, 168px) 24px clamp(120px, 14vw, 200px);
   display: flex;
   justify-content: center;
-  background-image: url("/Images/img-slider/bg-img.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background: #050505;
   isolation: isolate;
 }
 
@@ -397,7 +394,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(6, 6, 6, 0.92) 0%, rgba(6, 6, 6, 0.75) 45%, rgba(6, 6, 6, 0.94) 100%);
+  background: rgba(6, 6, 6, 0.95);
   z-index: 0;
 }
 
@@ -450,8 +447,8 @@
   display: flex;
   align-items: flex-end;
   justify-content: flex-start;
-  width: clamp(96px, 10vw, 120px);
-  height: clamp(420px, 48vw, 520px);
+  width: clamp(96px, 11vw, 140px);
+  height: clamp(380px, 42vw, 460px);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -469,18 +466,18 @@
 
 .sliderCard:nth-child(1),
 .sliderCard:nth-last-child(1) {
-  height: clamp(420px, 46vw, 500px);
+  height: clamp(380px, 40vw, 440px);
 }
 
 .sliderCard:nth-child(2),
 .sliderCard:nth-last-child(2) {
-  height: clamp(520px, 52vw, 580px);
+  height: clamp(440px, 46vw, 520px);
 }
 
 .sliderCard:nth-child(3),
 .sliderCard:nth-child(4),
 .sliderCard:nth-child(5) {
-  height: clamp(620px, 60vw, 660px);
+  height: clamp(500px, 52vw, 600px);
 }
 
 .sliderCard:focus-visible {
@@ -489,7 +486,7 @@
 }
 
 .sliderCardActive {
-  width: clamp(520px, 48vw, 720px);
+  width: clamp(360px, 40vw, 520px);
   height: auto;
   aspect-ratio: 1 / 1;
   box-shadow: 0 40px 120px rgba(0, 0, 0, 0.6);
@@ -501,7 +498,7 @@
 }
 
 .sliderCardActive .sliderImage {
-  transform: scale(1.06);
+  transform: scale(1.02);
 }
 
 .sliderName {
@@ -564,11 +561,11 @@
   }
 
   .sliderCard {
-    width: clamp(96px, 14vw, 160px);
+    width: clamp(100px, 16vw, 180px);
   }
 
   .sliderCardActive {
-    width: clamp(420px, 64vw, 560px);
+    width: clamp(320px, 54vw, 480px);
   }
 }
 
@@ -589,8 +586,8 @@
   }
 
   .sliderCard {
-    flex: 0 0 clamp(220px, 70vw, 260px);
-    height: clamp(420px, 84vw, 520px);
+    flex: 0 0 clamp(210px, 66vw, 250px);
+    height: clamp(360px, 74vw, 460px);
     scroll-snap-align: center;
   }
 
@@ -601,12 +598,12 @@
   .sliderCard:nth-child(3),
   .sliderCard:nth-child(4),
   .sliderCard:nth-child(5) {
-    height: clamp(420px, 84vw, 520px);
+    height: clamp(360px, 74vw, 460px);
   }
 
   .sliderCardActive {
-    flex-basis: clamp(260px, 78vw, 320px);
-    width: clamp(260px, 78vw, 320px);
+    flex-basis: clamp(240px, 72vw, 300px);
+    width: clamp(240px, 72vw, 300px);
     height: auto;
     aspect-ratio: 1 / 1;
   }
@@ -622,12 +619,12 @@
   }
 
   .sliderCard {
-    flex: 0 0 72vw;
+    flex: 0 0 70vw;
   }
 
   .sliderCardActive {
-    flex-basis: 78vw;
-    width: 78vw;
+    flex-basis: 80vw;
+    width: 80vw;
     height: auto;
     aspect-ratio: 1 / 1;
   }
