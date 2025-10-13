@@ -208,29 +208,19 @@
   padding: 0;
   display: flex;
   justify-content: center;
+  overflow: hidden;
 }
 
-.videoShell {
+.videoWrap {
   position: relative;
-  width: 94vw;
+  width: min(94vw, 1400px);
   aspect-ratio: 21 / 9;
   min-height: clamp(260px, 56vw, 540px);
+  clip-path: polygon(0 12%, 100% 4%, 100% 100%, 0 88%);
+  border-radius: 28px;
+  overflow: hidden;
   background: #050505;
   box-shadow: 0 40px 120px rgba(0, 0, 0, 0.65);
-}
-
-.clipWrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.clipContainer {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-  border-radius: var(--radius-global);
 }
 
 .promoVideo {
@@ -281,6 +271,11 @@
     margin-top: clamp(-36px, -6vw, -16px);
   }
 
+  .videoWrap {
+    clip-path: polygon(0 16%, 100% 6%, 100% 100%, 0 92%);
+    border-radius: 20px;
+  }
+
   .textContent {
     padding: clamp(24px, 7vw, 48px);
   }
@@ -309,7 +304,7 @@
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  border-radius: max(var(--radius-global), 999px);
+  border-radius: 999px;
   padding: 0.85rem 1.9rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
@@ -385,7 +380,7 @@
 .aboutCard {
   background: var(--surface);
   border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: var(--radius-global);
+  border-radius: 18px;
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -436,7 +431,7 @@
 
 .testimonialCard {
   background: var(--surface);
-  border-radius: var(--radius-global);
+  border-radius: 18px;
   padding: 24px;
   border-left: 3px solid var(--accent);
   display: flex;
@@ -465,7 +460,7 @@
 
 .serviceCard {
   background: var(--surface);
-  border-radius: var(--radius-global);
+  border-radius: 22px;
   padding: 32px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
@@ -499,7 +494,7 @@
 
 .caseStudy {
   background: var(--surface-alt);
-  border-radius: var(--radius-global);
+  border-radius: 18px;
   padding: 24px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
@@ -541,7 +536,7 @@
 
 .faqItem {
   background: var(--surface);
-  border-radius: var(--radius-global);
+  border-radius: 18px;
   padding: 24px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
@@ -583,7 +578,7 @@
 
 .contactForm {
   background: var(--surface);
-  border-radius: var(--radius-global);
+  border-radius: 22px;
   padding: 32px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
@@ -607,7 +602,7 @@
 .formRow textarea {
   background: var(--surface-alt);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-global);
+  border-radius: 12px;
   padding: 12px 14px;
   color: var(--foreground);
   font-size: 0.95rem;
@@ -636,7 +631,7 @@
   text-align: center;
   background: linear-gradient(135deg, rgba(72, 198, 239, 0.12), transparent 55%);
   border: 1px solid rgba(72, 198, 239, 0.18);
-  border-radius: var(--radius-global);
+  border-radius: 28px;
   padding: 56px 32px;
   gap: 20px;
 }
