@@ -490,7 +490,8 @@
 
 .sliderCardActive {
   width: clamp(520px, 48vw, 720px);
-  height: clamp(680px, 64vw, 760px);
+  height: auto;
+  aspect-ratio: 1 / 1;
   box-shadow: 0 40px 120px rgba(0, 0, 0, 0.6);
 }
 
@@ -506,14 +507,17 @@
 .sliderName {
   position: absolute;
   top: 50%;
-  left: -12%;
-  transform: translateY(-50%) rotate(-90deg);
-  transform-origin: left center;
-  font-size: clamp(2rem, 4vw, 3rem);
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  transform-origin: center;
+  font-size: clamp(1rem, 2.6vw, 1.6rem);
   font-weight: 700;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.78);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+  text-align: center;
   transition: opacity 0.35s ease;
 }
 
@@ -603,7 +607,8 @@
   .sliderCardActive {
     flex-basis: clamp(260px, 78vw, 320px);
     width: clamp(260px, 78vw, 320px);
-    height: clamp(460px, 88vw, 560px);
+    height: auto;
+    aspect-ratio: 1 / 1;
   }
 
   .sliderName {
@@ -623,6 +628,8 @@
   .sliderCardActive {
     flex-basis: 78vw;
     width: 78vw;
+    height: auto;
+    aspect-ratio: 1 / 1;
   }
 
   .sliderName {

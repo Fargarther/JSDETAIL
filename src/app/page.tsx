@@ -106,21 +106,25 @@ const testimonials = [
 const sliderProfiles = [
   {
     name: "About Me",
+    label: "About",
     role: "Your Visual Storyteller",
     image: "/Images/img-slider/About_Me.jpg",
   },
   {
     name: "Real Estate",
+    label: "Estate",
     role: "Premium Property Tours",
     image: "/Images/img-slider/Realestate.jpg",
   },
   {
     name: "Culinary Stories",
+    label: "Stories",
     role: "Stylized Food Narratives",
     image: "/Images/img-slider/Food.jpg",
   },
   {
     name: "Aerial Perspective",
+    label: "Perspective",
     role: "Signature Drone Cinematics",
     image: "/Images/img-slider/Drone.png",
   },
@@ -697,7 +701,7 @@ export default function Home() {
                       priority={index === activeSlide}
                     />
                     <span aria-hidden="true" className={styles.sliderName}>
-                      {profile.name}
+                      {("label" in profile && profile.label) || profile.name}
                     </span>
                     <span className={styles.sliderDetails}>
                       <strong>{profile.name}</strong>
