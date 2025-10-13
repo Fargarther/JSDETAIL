@@ -516,10 +516,32 @@
   text-transform: uppercase;
   letter-spacing: 0.18em;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.9);
+  color: #ffffff;
   white-space: nowrap;
   text-align: center;
   transition: opacity 0.35s ease;
+  z-index: 1;
+  padding: clamp(10px, 2vw, 16px) clamp(22px, 4vw, 32px);
+  border-radius: 24px;
+  backdrop-filter: blur(21px) saturate(180%);
+  -webkit-backdrop-filter: blur(21px) saturate(180%);
+  background: linear-gradient(140deg, rgba(8, 8, 8, 0.85), rgba(28, 28, 28, 0.68));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.sliderName::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.28), transparent 65%);
+  pointer-events: none;
+  opacity: 0.65;
 }
 
 .sliderCardActive .sliderName {
@@ -539,6 +561,37 @@
   transition:
     opacity 0.45s ease,
     transform 0.45s ease;
+  padding: clamp(14px, 2.6vw, 24px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(5, 5, 5, 0.64), rgba(5, 5, 5, 0.38));
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  overflow: visible;
+  z-index: 1;
+}
+
+.sliderDetails::before {
+  content: "";
+  position: absolute;
+  inset: -22px;
+  border-radius: 28px;
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.35), rgba(72, 198, 239, 0.12));
+  opacity: 0.45;
+  filter: blur(28px);
+  z-index: -1;
+}
+
+.sliderDetails::after {
+  content: "";
+  position: absolute;
+  inset: -46px -36px -66px -36px;
+  border-radius: 36px;
+  background: rgba(0, 0, 0, 0.6);
+  filter: blur(40px);
+  z-index: -2;
+  opacity: 0.6;
 }
 
 .sliderDetails strong {
@@ -551,6 +604,10 @@
   font-size: clamp(1.05rem, 1.6vw, 1.4rem);
   letter-spacing: 0.2em;
   color: rgba(255, 255, 255, 0.78);
+}
+
+.sliderCardActive .sliderDetails span {
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .sliderCardActive .sliderDetails {
@@ -745,15 +802,19 @@
 }
 
 .pillarsGrid,
-.portfolioGrid,
 .policyGrid {
   display: grid;
   gap: 24px;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
+.portfolioGrid {
+  display: grid;
+  gap: clamp(18px, 2.6vw, 32px);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
 .pillarCard,
-.portfolioCard,
 .policyCard,
 .aboutCard {
   background: var(--surface);
@@ -765,9 +826,14 @@
   gap: 12px;
 }
 
-.portfolioCard {
+.portfolioItem {
   position: relative;
   overflow: hidden;
+  border-radius: 20px;
+  min-height: clamp(340px, 36vw, 420px);
+  display: flex;
+  align-items: flex-end;
+  isolation: isolate;
 }
 
 .cardEyebrow {
@@ -777,7 +843,6 @@
   color: var(--accent);
 }
 
-.portfolioCard h3,
 .pillarCard h3,
 .aboutCard h3,
 .policyCard h3 {
@@ -785,7 +850,6 @@
   font-weight: 600;
 }
 
-.portfolioCard p,
 .pillarCard p,
 .policyCard li,
 .aboutCard p {
@@ -799,6 +863,85 @@
   text-transform: uppercase;
   letter-spacing: 0.18em;
   color: var(--accent);
+}
+
+.portfolioImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.8) contrast(1.1);
+  transition: transform 0.4s ease;
+}
+
+.portfolioItem:hover .portfolioImage {
+  transform: scale(1.05);
+}
+
+.glassBox {
+  position: absolute;
+  bottom: clamp(18px, 3vw, 28px);
+  left: clamp(18px, 3vw, 28px);
+  right: clamp(18px, 3vw, 28px);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 16px;
+  padding: clamp(18px, 3vw, 28px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  transition: all 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.glassBox::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.08));
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.glassBox:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-4px);
+}
+
+.glassBox h3 {
+  font-size: clamp(1.4rem, 2.6vw, 1.8rem);
+  font-weight: 600;
+}
+
+.glassBox p {
+  color: rgba(245, 245, 245, 0.85);
+  line-height: 1.6;
+}
+
+.category {
+  display: block;
+  font-size: 0.9rem;
+  opacity: 0.8;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .glassBox {
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    padding: 16px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
 }
 
 .testimonialGrid {

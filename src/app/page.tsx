@@ -61,24 +61,36 @@ const portfolioProjects = [
     category: "Aerial Tour",
     description:
       "A breathtaking 4K drone tour captured at golden hour. The sweeping shots highlighted the tower and its downtown surroundings, helping the developer pre-sell units faster than expected.",
+    image: "/Images/portfolio/skyline.jpg",
+    width: 2000,
+    height: 2000,
   },
   {
     title: "Farm-to-Table Cuisine",
     category: "Food Photography",
     description:
       "A mouth-watering shoot for a farm-to-table bistro. Vibrant colors, styled plates, and texture-rich details powered a new menu launch and drove a spike in reservations.",
+    image: "/Images/portfolio/farmtotable.jpg",
+    width: 2000,
+    height: 2000,
   },
   {
     title: "Innovative Gadget Launch",
     category: "Product Film",
     description:
       "A cinematic launch film that combined macro shots with lifestyle footage. Thousands of views and high engagement reinforced the product's quality and innovation.",
+    image: "/Images/portfolio/gadget.jpg",
+    width: 2666,
+    height: 2000,
   },
   {
     title: "Heritage Bridge Inspection",
     category: "Industrial Mapping",
     description:
       "High-detail drone imagery and orthomosaic mapping delivered a comprehensive structural view without road closures, saving the client weeks of manual inspection time.",
+    image: "/Images/portfolio/bridge.png",
+    width: 1024,
+    height: 1024,
   },
 ];
 
@@ -764,13 +776,25 @@ export default function Home() {
           </header>
           <div className={styles.portfolioGrid}>
             {portfolioProjects.map((project) => (
-              <article key={project.title} className={styles.portfolioCard}>
-                <span className={styles.cardEyebrow}>{project.category}</span>
-                <h3>{project.title}</h3>
-                <p>{project.description}</p>
-                <a className={styles.cardLink} href="#contact">
-                  View Case Study
-                </a>
+              <article key={project.title} className={styles.portfolioItem}>
+                <Image
+                  src={project.image}
+                  alt={project.title}
+                  width={project.width}
+                  height={project.height}
+                  quality={95}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className={styles.portfolioImage}
+                  style={{ width: "100%", height: "100%" }}
+                />
+                <div className={styles.glassBox}>
+                  <span className={styles.category}>{project.category}</span>
+                  <h3>{project.title}</h3>
+                  <p>{project.description}</p>
+                  <a className={styles.cardLink} href="#contact">
+                    View Case Study
+                  </a>
+                </div>
               </article>
             ))}
           </div>
