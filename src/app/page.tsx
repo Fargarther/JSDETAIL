@@ -55,7 +55,16 @@ const valuePillars = [
       "Professionalism underpins everything. We are FAA Part 107 certified, fully insured, and meticulous about safety and compliance so you can rely on a team that protects your project and reputation.",
   },
 ];
-const portfolioProjects = [
+type PortfolioProject = {
+  title: string;
+  category: string;
+  description: string;
+  image: string;
+  width: number;
+  height: number;
+};
+
+const portfolioProjects: PortfolioProject[] = [
   {
     title: "Skyline Luxury Condos",
     category: "Aerial Tour",
@@ -115,7 +124,16 @@ const testimonials = [
   },
 ];
 
-const sliderProfiles = [
+type SliderProfile = {
+  name: string;
+  label: string;
+  role: string;
+  image: string;
+  width: number;
+  height: number;
+};
+
+const sliderProfiles: SliderProfile[] = [
   {
     name: "About Me",
     label: "About",
@@ -729,9 +747,7 @@ export default function Home() {
                       priority={index === activeSlide}
                       style={{ width: "100%", height: "100%" }}
                     />
-                    <span aria-hidden="true" className={styles.sliderName}>
-                      {("label" in profile && profile.label) || profile.name}
-                    </span>
+                    <span aria-hidden="true" className={styles.sliderName}>{profile.label || profile.name}</span>
                     <span className={styles.sliderDetails}>
                       <strong>{profile.name}</strong>
                       <span>{profile.role}</span>
