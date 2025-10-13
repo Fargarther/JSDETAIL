@@ -105,39 +105,24 @@ const testimonials = [
 
 const sliderProfiles = [
   {
-    name: "Mike",
-    role: "Web3 Developer",
-    image: "/Images/img-slider/slide1.png",
+    name: "About Me",
+    role: "Your Visual Storyteller",
+    image: "/Images/img-slider/About_Me.jpg",
   },
   {
-    name: "Samite",
-    role: "WordPress Developer",
-    image: "/Images/img-slider/slide2.png",
+    name: "Real Estate",
+    role: "Premium Property Tours",
+    image: "/Images/img-slider/Realestate.jpg",
   },
   {
-    name: "Hashi",
-    role: "Java Developer",
-    image: "/Images/img-slider/slide3.png",
+    name: "Culinary Stories",
+    role: "Stylized Food Narratives",
+    image: "/Images/img-slider/Food.jpg",
   },
   {
-    name: "Kaity",
-    role: "Web Developer",
-    image: "/Images/img-slider/slide4.png",
-  },
-  {
-    name: "Lauren",
-    role: "PHP Developer",
-    image: "/Images/img-slider/slide5.png",
-  },
-  {
-    name: "Ryan",
-    role: "SEO Specialist",
-    image: "/Images/img-slider/slide6.png",
-  },
-  {
-    name: "Dakes",
-    role: "SQL Developer",
-    image: "/Images/img-slider/slide7.png",
+    name: "Aerial Perspective",
+    role: "Signature Drone Cinematics",
+    image: "/Images/img-slider/Drone.png",
   },
 ] as const;
 const services = [
@@ -396,7 +381,7 @@ export default function Home() {
   const [ratioSegmentsDrawn, setRatioSegmentsDrawn] = useState(false);
   const [overlayActive, setOverlayActive] = useState(false);
   const [promoActive, setPromoActive] = useState(false);
-  const [activeSlide, setActiveSlide] = useState<number>(3);
+  const [activeSlide, setActiveSlide] = useState<number>(0);
   const [formStatus, setFormStatus] = useState<"idle" | "success">("idle");
 
   useEffect(() => {
@@ -683,11 +668,11 @@ export default function Home() {
         <section className={styles.sliderSection}>
           <div className={styles.sliderInner}>
             <header className={styles.sliderHeader}>
-              <span className={styles.sliderEyebrow}>Talent Spotlight</span>
-              <h2>Click Through the Crew</h2>
+              <span className={styles.sliderEyebrow}>Portfolio Spotlight</span>
+              <h2>Explore Signature Looks</h2>
               <p>
-                Adapted from UI University's image slider, this interactive strip gives you a fast feel for the
-                multidisciplinary makers who bring JSDetail shoots to life.
+                Tap through four core story types&mdash;from personal branding to aerial flyovers&mdash;and see how JSDetail
+                shapes each narrative with precision.
               </p>
             </header>
             <div className={styles.sliderTrack} role="list">

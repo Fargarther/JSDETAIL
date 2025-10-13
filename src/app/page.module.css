@@ -539,6 +539,7 @@
 .sliderDetails strong {
   font-size: clamp(1.6rem, 3vw, 2.4rem);
   letter-spacing: 0.08em;
+  color: #ffffff;
 }
 
 .sliderDetails span {
