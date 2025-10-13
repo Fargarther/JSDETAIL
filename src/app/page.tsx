@@ -8,6 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./page.module.css";
 
 import FlavorWordsOverlay from "@/components/FlavorWordsOverlay";
+import RoundedSlantClip from "./components/RoundedSlantClip";
 
 const navLinks = [
   { href: "#home", label: "Home" },
@@ -624,7 +625,7 @@ export default function Home() {
           </div>
         </section>
         <section ref={promoSectionRef} className={styles.promoSection}>
-          <div className={styles.videoWrap}>
+          <RoundedSlantClip r={28} tlY={0} trY={80} blY={0} brY={80} className={styles.videoShell}>
             <video
               className={styles.promoVideo}
               src="/Videos/pano_4k.mp4"
@@ -638,11 +639,10 @@ export default function Home() {
             <div className={styles.textContent}>
               <h2>Full-Spectrum Visual Storytelling</h2>
               <p>
-                Watch how we blend sweeping aerial perspective with intimate ground detail to craft narratives that
-                hold attention and drive action.
+                Sweeping aerials and intimate detail, blended with cinematic slant and soft rounded form.
               </p>
             </div>
-          </div>
+          </RoundedSlantClip>
         </section>
         <section className={joinClasses(styles.section, styles.introSection)}>
           <div className={styles.sectionHeading}>
