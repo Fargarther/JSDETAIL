@@ -102,6 +102,44 @@ const testimonials = [
     role: "Marketing Director, Acme Innovations",
   },
 ];
+
+const sliderProfiles = [
+  {
+    name: "Mike",
+    role: "Web3 Developer",
+    image: "/Images/img-slider/slide1.png",
+  },
+  {
+    name: "Samite",
+    role: "WordPress Developer",
+    image: "/Images/img-slider/slide2.png",
+  },
+  {
+    name: "Hashi",
+    role: "Java Developer",
+    image: "/Images/img-slider/slide3.png",
+  },
+  {
+    name: "Kaity",
+    role: "Web Developer",
+    image: "/Images/img-slider/slide4.png",
+  },
+  {
+    name: "Lauren",
+    role: "PHP Developer",
+    image: "/Images/img-slider/slide5.png",
+  },
+  {
+    name: "Ryan",
+    role: "SEO Specialist",
+    image: "/Images/img-slider/slide6.png",
+  },
+  {
+    name: "Dakes",
+    role: "SQL Developer",
+    image: "/Images/img-slider/slide7.png",
+  },
+] as const;
 const services = [
   {
     id: "aerial-services",
@@ -358,6 +396,7 @@ export default function Home() {
   const [ratioSegmentsDrawn, setRatioSegmentsDrawn] = useState(false);
   const [overlayActive, setOverlayActive] = useState(false);
   const [promoActive, setPromoActive] = useState(false);
+  const [activeSlide, setActiveSlide] = useState<number>(3);
   const [formStatus, setFormStatus] = useState<"idle" | "success">("idle");
 
   useEffect(() => {
@@ -638,6 +677,50 @@ export default function Home() {
                 Watch how we blend sweeping aerial perspective with intimate ground detail to craft narratives that
                 hold attention and drive action.
               </p>
+            </div>
+          </div>
+        </section>
+        <section className={styles.sliderSection}>
+          <div className={styles.sliderInner}>
+            <header className={styles.sliderHeader}>
+              <span className={styles.sliderEyebrow}>Talent Spotlight</span>
+              <h2>Click Through the Crew</h2>
+              <p>
+                Adapted from UI University's image slider, this interactive strip gives you a fast feel for the
+                multidisciplinary makers who bring JSDetail shoots to life.
+              </p>
+            </header>
+            <div className={styles.sliderTrack} role="list">
+              {sliderProfiles.map((profile, index) => {
+                const isActive = activeSlide === index;
+                return (
+                  <button
+                    key={profile.name}
+                    type="button"
+                    role="listitem"
+                    className={joinClasses(styles.sliderCard, isActive && styles.sliderCardActive)}
+                    onClick={() => setActiveSlide(index)}
+                    aria-pressed={isActive}
+                    aria-label={`Showcase ${profile.name}, ${profile.role}`}
+                  >
+                    <Image
+                      src={profile.image}
+                      alt={`${profile.name}, ${profile.role}`}
+                      fill
+                      sizes="(max-width: 768px) 70vw, (max-width: 1200px) 22vw, 14vw"
+                      className={styles.sliderImage}
+                      priority={index === activeSlide}
+                    />
+                    <span aria-hidden="true" className={styles.sliderName}>
+                      {profile.name}
+                    </span>
+                    <span className={styles.sliderDetails}>
+                      <strong>{profile.name}</strong>
+                      <span>{profile.role}</span>
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </section>
