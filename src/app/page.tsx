@@ -109,24 +109,32 @@ const sliderProfiles = [
     label: "About",
     role: "Your Visual Storyteller",
     image: "/Images/img-slider/About_Me.jpg",
+    width: 2666,
+    height: 2000,
   },
   {
     name: "Real Estate",
     label: "Estate",
     role: "Premium Property Tours",
     image: "/Images/img-slider/Realestate.jpg",
+    width: 2000,
+    height: 2000,
   },
   {
     name: "Culinary Stories",
     label: "Stories",
     role: "Stylized Food Narratives",
     image: "/Images/img-slider/Food.jpg",
+    width: 2000,
+    height: 2000,
   },
   {
     name: "Aerial Perspective",
     label: "Perspective",
     role: "Signature Drone Cinematics",
     image: "/Images/img-slider/Drone.png",
+    width: 1024,
+    height: 1024,
   },
 ] as const;
 const services = [
@@ -567,10 +575,13 @@ export default function Home() {
               <Image
                 src="/Images/JS_Detail_Typography.png"
                 alt="JSDetail"
-                fill
+                width={1920}
+                height={1080}
                 priority
-                sizes="(max-width: 768px) 140px, 220px"
+                quality={95}
+                sizes="(max-width: 640px) 140px, 220px"
                 className={styles.logoImage}
+                style={{ width: "100%", height: "100%" }}
               />
             </div>
           </Link>
@@ -591,10 +602,13 @@ export default function Home() {
               <Image
                 src="/Images/JS_Detail_Typography.png"
                 alt="JSDetail logo"
-                fill
+                width={1920}
+                height={1080}
                 priority
-                sizes="(max-width: 768px) 80vw, 720px"
+                quality={95}
+                sizes="(max-width: 768px) 70vw, (max-width: 1280px) 48vw, 720px"
                 className={styles.heroLogo}
+                style={{ width: "100%", height: "100%" }}
               />
               <div className={styles.heroSpiral} aria-hidden="true">
                 <svg
@@ -695,10 +709,13 @@ export default function Home() {
                     <Image
                       src={profile.image}
                       alt={`${profile.name}, ${profile.role}`}
-                      fill
-                      sizes="(max-width: 768px) 70vw, (max-width: 1200px) 22vw, 14vw"
+                      width={profile.width}
+                      height={profile.height}
+                      quality={95}
+                      sizes="(max-width: 540px) 82vw, (max-width: 1024px) 42vw, 28vw"
                       className={styles.sliderImage}
                       priority={index === activeSlide}
+                      style={{ width: "100%", height: "100%" }}
                     />
                     <span aria-hidden="true" className={styles.sliderName}>
                       {("label" in profile && profile.label) || profile.name}
@@ -944,7 +961,16 @@ export default function Home() {
         <div className={styles.footerInner}>
           <div>
             <div className={styles.logoWrapSmall}>
-              <Image src="/Images/JS_Detail_Typography.png" alt="JSDetail" fill sizes="140px" className={styles.logoImage} />
+              <Image
+                src="/Images/JS_Detail_Typography.png"
+                alt="JSDetail"
+                width={1920}
+                height={1080}
+                quality={95}
+                sizes="(max-width: 640px) 160px, 220px"
+                className={styles.logoImage}
+                style={{ width: "100%", height: "100%" }}
+              />
             </div>
             <p>Every angle. Every detail. One story.</p>
           </div>
