@@ -3,12 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./page.module.css";
 
 import FlavorWordsOverlay from "@/components/FlavorWordsOverlay";
-import ACGClip from "./components/ACGClip";
+import RoundedSlantClip from "./components/RoundedSlantClip";
 
 const navLinks = [
   { href: "#home", label: "Home" },
@@ -351,7 +349,6 @@ const joinClasses = (
 ) => classes.filter(Boolean).join(" ");
 export default function Home() {
   const heroRef = useRef<HTMLElement | null>(null);
-  const promoSectionRef = useRef<HTMLElement | null>(null);
   const [navVisible, setNavVisible] = useState(false);
   const spiralPathRef = useRef<SVGPathElement | null>(null);
   const [spiralDrawn, setSpiralDrawn] = useState(false);
@@ -361,44 +358,6 @@ export default function Home() {
   const [ratioSegmentsDrawn, setRatioSegmentsDrawn] = useState(false);
   const [overlayActive, setOverlayActive] = useState(false);
   const [formStatus, setFormStatus] = useState<"idle" | "success">("idle");
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    gsap.registerPlugin(ScrollTrigger);
-    if (!promoSectionRef.current) {
-      return;
-    }
-
-    const context = gsap.context(() => {
-      gsap.from(`.${styles.promoText}`, {
-        y: 80,
-        opacity: 0,
-        duration: 1.2,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: promoSectionRef.current,
-          start: "top 80%",
-          toggleActions: "play none none reverse",
-        },
-      });
-
-      gsap.from(`.${styles.videoShell}`, {
-        opacity: 0,
-        y: 100,
-        duration: 1.2,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: promoSectionRef.current,
-          start: "top 85%",
-        },
-      });
-    }, promoSectionRef);
-
-    return () => context.revert();
-  }, []);
 
   useEffect(() => {
     const evaluateVisibility = () => {
@@ -635,8 +594,9 @@ export default function Home() {
             />
           </div>
         </section>
+<<<<<<< HEAD
         <section ref={promoSectionRef} className={styles.promoSection}>
-          <ACGClip topSlant={0.08} bottomSlant={0.05} radius={0.04} className={styles.videoShell}>
+          <RoundedSlantClip r={28} tlY={0} trY={80} blY={0} brY={80} className={styles.videoShell}>
             <video
               className={styles.promoVideo}
               src="/Videos/pano_4k.mp4"
@@ -646,16 +606,17 @@ export default function Home() {
               playsInline
               aria-hidden="true"
             />
-            <div className={styles.promoOverlay} />
-            <div className={styles.promoText}>
+            <div className={styles.overlay} />
+            <div className={styles.textContent}>
               <h2>Full-Spectrum Visual Storytelling</h2>
               <p>
-                Our adaptive geometry keeps motion dynamic — the slant flows with viewport width while maintaining
-                perfectly rounded corners.
+                Sweeping aerials and intimate detail, blended with cinematic slant and soft rounded form.
               </p>
             </div>
-          </ACGClip>
+          </RoundedSlantClip>
         </section>
+=======
+>>>>>>> parent of dbe54c6 (Converging Slant adjustsments)
         <section className={joinClasses(styles.section, styles.introSection)}>
           <div className={styles.sectionHeading}>
             <h2>Outcome-Oriented Imagery</h2>
