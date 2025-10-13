@@ -199,7 +199,6 @@
   opacity: 0.65;
 }
 
-<<<<<<< HEAD
 .promoSection {
   position: relative;
   width: 100%;
@@ -217,7 +216,7 @@
   aspect-ratio: 21 / 9;
   min-height: clamp(260px, 56vw, 540px);
   clip-path: polygon(0 12%, 100% 4%, 100% 100%, 0 88%);
-  border-radius: 28px;
+  border-radius: 0;
   overflow: hidden;
   background: #050505;
   box-shadow: 0 40px 120px rgba(0, 0, 0, 0.65);
@@ -273,7 +272,7 @@
 
   .videoWrap {
     clip-path: polygon(0 16%, 100% 6%, 100% 100%, 0 92%);
-    border-radius: 20px;
+    border-radius: 0;
   }
 
   .textContent {
@@ -294,9 +293,6 @@
     font-size: 1rem;
   }
 }
-
-=======
->>>>>>> parent of dbe54c6 (Converging Slant adjustsments)
 .primaryButton,
 .secondaryButton,
 .submitButton {

@@ -348,6 +348,7 @@ const joinClasses = (
 ) => classes.filter(Boolean).join(" ");
 export default function Home() {
   const heroRef = useRef<HTMLElement | null>(null);
+  const promoSectionRef = useRef<HTMLElement | null>(null);
   const [navVisible, setNavVisible] = useState(false);
   const spiralPathRef = useRef<SVGPathElement | null>(null);
   const [spiralDrawn, setSpiralDrawn] = useState(false);
@@ -593,7 +594,6 @@ export default function Home() {
             />
           </div>
         </section>
-<<<<<<< HEAD
         <section ref={promoSectionRef} className={styles.promoSection}>
           <div className={styles.videoWrap}>
             <video
@@ -615,8 +615,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-=======
->>>>>>> parent of dbe54c6 (Converging Slant adjustsments)
         <section className={joinClasses(styles.section, styles.introSection)}>
           <div className={styles.sectionHeading}>
             <h2>Outcome-Oriented Imagery</h2>
