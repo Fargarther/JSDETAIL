@@ -357,6 +357,7 @@ export default function Home() {
   const ratioSegmentRefs = useRef<Array<SVGPathElement | null>>([]);
   const [ratioSegmentsDrawn, setRatioSegmentsDrawn] = useState(false);
   const [overlayActive, setOverlayActive] = useState(false);
+  const [promoActive, setPromoActive] = useState(false);
   const [formStatus, setFormStatus] = useState<"idle" | "success">("idle");
 
   useEffect(() => {
@@ -381,6 +382,28 @@ export default function Home() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    const section = promoSectionRef.current;
+    if (!section || promoActive) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setPromoActive(true);
+        }
+      },
+      { threshold: 0.4, rootMargin: "0px 0px -10% 0px" },
+    );
+
+    observer.observe(section);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [promoActive]);
 
   useEffect(() => {
     const frameEl = ratioFrameRef.current;
@@ -594,7 +617,10 @@ export default function Home() {
             />
           </div>
         </section>
-        <section ref={promoSectionRef} className={styles.promoSection}>
+        <section
+          ref={promoSectionRef}
+          className={joinClasses(styles.promoSection, promoActive && styles.promoSectionActive)}
+        >
           <div className={styles.videoWrap}>
             <video
               className={styles.promoVideo}
