@@ -93,6 +93,7 @@ export default function Home() {
   const [ratioSegmentsDrawn, setRatioSegmentsDrawn] = useState(false);
   const [overlayActive, setOverlayActive] = useState(false);
   const [promoActive, setPromoActive] = useState(false);
+  const [activeSlide, setActiveSlide] = useState<number>(0);
 
   useEffect(() => {
     const evaluateVisibility = () => {
@@ -385,32 +386,37 @@ export default function Home() {
               </p>
             </header>
             <div className={styles.sliderTrack} role="list">
-              {sliderProfiles.map((profile, index) => (
-                <button
-                  key={profile.name}
-                  type="button"
-                  role="listitem"
-                  className={styles.sliderCard}
-                  aria-label={`Showcase ${profile.name}, ${profile.role}`}
-                >
-                  <Image
-                    src={profile.image}
-                    alt={`${profile.name}, ${profile.role}`}
-                    width={profile.width}
-                    height={profile.height}
-                    quality={95}
-                    sizes="(max-width: 540px) 82vw, (max-width: 1024px) 42vw, 28vw"
-                    className={styles.sliderImage}
-                    priority={index === 0}
-                    style={{ width: "100%", height: "100%" }}
-                  />
-                  <span aria-hidden="true" className={styles.sliderName}>{profile.label || profile.name}</span>
-                  <span className={styles.sliderDetails}>
-                    <strong>{profile.name}</strong>
-                    <span>{profile.role}</span>
-                  </span>
-                </button>
-              ))}
+              {sliderProfiles.map((profile, index) => {
+                const isActive = activeSlide === index;
+                return (
+                  <button
+                    key={profile.name}
+                    type="button"
+                    role="listitem"
+                    className={joinClasses(styles.sliderCard, isActive && styles.sliderCardActive)}
+                    onClick={() => setActiveSlide(index)}
+                    aria-pressed={isActive}
+                    aria-label={`Showcase ${profile.name}, ${profile.role}`}
+                  >
+                    <Image
+                      src={profile.image}
+                      alt={`${profile.name}, ${profile.role}`}
+                      width={profile.width}
+                      height={profile.height}
+                      quality={95}
+                      sizes="(max-width: 540px) 82vw, (max-width: 1024px) 42vw, 28vw"
+                      className={styles.sliderImage}
+                      priority={isActive}
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                    <span aria-hidden="true" className={styles.sliderName}>{profile.label || profile.name}</span>
+                    <span className={styles.sliderDetails}>
+                      <strong>{profile.name}</strong>
+                      <span>{profile.role}</span>
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </section>
