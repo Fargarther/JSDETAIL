@@ -214,9 +214,9 @@
 
 .videoWrap {
   position: relative;
-  width: min(94vw, 1400px);
+  width: min(84vw, 1260px);
   aspect-ratio: 21 / 9;
-  min-height: clamp(260px, 56vw, 540px);
+  min-height: clamp(234px, 50vw, 486px);
   clip-path: polygon(0 12%, 100% 4%, 100% 100%, 0 88%);
   border-radius: 0;
   overflow: hidden;

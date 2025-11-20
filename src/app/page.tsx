@@ -42,7 +42,7 @@ const sliderProfiles: SliderProfile[] = [
     name: "About Me",
     label: "About",
     role: "Your Visual Storyteller",
-    image: "/Images/img-slider/About_Me.jpg",
+    image: "/Images/webp/About_Me.webp",
     width: 2666,
     height: 2000,
   },
@@ -50,7 +50,7 @@ const sliderProfiles: SliderProfile[] = [
     name: "Real Estate",
     label: "Estate",
     role: "Premium Property Tours",
-    image: "/Images/img-slider/Realestate.jpg",
+    image: "/Images/webp/Realestate.webp",
     width: 2000,
     height: 2000,
   },
@@ -58,7 +58,7 @@ const sliderProfiles: SliderProfile[] = [
     name: "Culinary Stories",
     label: "Stories",
     role: "Stylized Food Narratives",
-    image: "/Images/img-slider/Food.jpg",
+    image: "/Images/webp/Food.webp",
     width: 2000,
     height: 2000,
   },
@@ -66,7 +66,7 @@ const sliderProfiles: SliderProfile[] = [
     name: "Aerial Perspective",
     label: "Perspective",
     role: "Signature Drone Cinematics",
-    image: "/Images/img-slider/Drone.png",
+    image: "/Images/webp/Drone.webp",
     width: 1024,
     height: 1024,
   },
@@ -265,7 +265,7 @@ export default function Home() {
             <span className="sr-only">JSDetail home</span>
             <div className={styles.logoWrap}>
               <Image
-                src="/Images/JS_Detail_Typography.png"
+                src="/Images/webp/JS_Detail_Typography.webp"
                 alt="JSDetail"
                 width={1920}
                 height={1080}
@@ -292,7 +292,7 @@ export default function Home() {
           <div className={styles.heroStage}>
             <div className={styles.heroFrame}>
               <Image
-                src="/Images/JS_Detail_Typography.png"
+                src="/Images/webp/JS_Detail_Typography.webp"
                 alt="JSDetail logo"
                 width={1920}
                 height={1080}
@@ -427,7 +427,7 @@ export default function Home() {
           <div>
             <div className={styles.logoWrapSmall}>
               <Image
-                src="/Images/JS_Detail_Typography.png"
+                src="/Images/webp/JS_Detail_Typography.webp"
                 alt="JSDetail"
                 width={1920}
                 height={1080}
