@@ -7,7 +7,10 @@ import styles from "./page.module.css";
 
 import FlavorWordsOverlay from "@/components/FlavorWordsOverlay";
 
-const navLinks = [{ href: "#home", label: "Home" }];
+const navLinks = [
+  { href: "#home", label: "Home" },
+  { href: "#about", label: "About" },
+];
 
 const HERO_FLAVOR_WORDS = ["Cinematic", "Precise", "Adaptive", "Human", "Scalable"];
 
@@ -279,7 +282,16 @@ export default function Home() {
           </Link>
           <nav className={styles.nav} aria-label="Primary navigation">
             {navLinks.map((link) => (
-              <a key={link.href} href={link.href} className={styles.navLink}>
+              <a
+                key={link.href}
+                href={link.href}
+                className={styles.navLink}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const id = link.href.replace("#", "");
+                  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
                 {link.label}
               </a>
             ))}
@@ -417,6 +429,47 @@ export default function Home() {
                   </button>
                 );
               })}
+            </div>
+          </div>
+        </section>
+        <section id="about" className={joinClasses(styles.section, styles.aboutSection)}>
+          <div className={styles.sectionHeading}>
+            <h2>About</h2>
+            <p className={styles.sectionLead}>
+              Clarity for Complex Decisions
+            </p>
+          </div>
+          <div className={styles.aboutGrid}>
+            <div className={styles.aboutCard}>
+              <h3>Background</h3>
+              <p>
+                JS Detail was built around a simple idea: complex problems require disciplined
+                systems, not just tools. With more than 25 years in high-performance, real-world
+                operations—from executive culinary leadership overseeing multiple outlets to
+                architecture, CAD, and engineering fundamentals—the foundation is precision,
+                repeatability, and the ability to make decisions with incomplete information while
+                outcomes are still on the line.
+              </p>
+            </div>
+            <div className={styles.aboutCard}>
+              <h3>Philosophy</h3>
+              <p>
+                While the current work centers on spatial documentation, aerial data capture, and
+                visual analysis, the technology is not the product. The product is clarity. Clients
+                come to JS Detail when they need reliable information to make decisions—whether
+                that involves planning, monitoring progress, validating assumptions, or communicating
+                complex conditions to stakeholders.
+              </p>
+            </div>
+            <div className={styles.aboutCard}>
+              <h3>Approach</h3>
+              <p>
+                JS Detail is intentionally structured to bridge disciplines. Technical capture is
+                paired with disciplined workflow design, quality control, and clear deliverables.
+                Projects are approached with the same rigor used in high-stakes operational
+                environments: defined objectives, controlled variables, documented processes, and
+                defensible results.
+              </p>
             </div>
           </div>
         </section>
