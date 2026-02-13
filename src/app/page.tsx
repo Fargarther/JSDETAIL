@@ -284,33 +284,41 @@ export default function Home() {
           </blockquote>
         </section>
 
-        {/* 3. SERVICES SLIDER */}
-        <section id="services" className={styles.sliderSection}>
-          <div className={styles.sliderInner}>
-            <header className={styles.sliderHeader}>
-              <span className={styles.sliderEyebrow}>Services by Sector</span>
+        {/* 3. SERVICES — TWO-PANEL SELECTOR */}
+        <section id="services" className={styles.servicesSection}>
+          <div className={styles.servicesInner}>
+            <header className={styles.servicesHeader}>
+              <span className={styles.servicesEyebrow}>Services by Sector</span>
               <h2>Find Your Solution</h2>
               <p>Select a sector to see how JSDetail delivers precision data tailored to your industry.</p>
             </header>
-            <div className={styles.sliderTrack} role="list">
-              {sectorSlides.map((sector, index) => {
-                const isActive = activeSlide === index;
-                return (
-                  <button key={sector.name} type="button" role="listitem" className={joinClasses(styles.sliderCard, isActive && styles.sliderCardActive)} onClick={() => setActiveSlide(index)} aria-pressed={isActive} aria-label={`Sector: ${sector.name}`} style={{ "--card-bg": sector.color } as React.CSSProperties}>
-                    <span aria-hidden="true" className={styles.sliderName}>{sector.label}</span>
-                    <div className={styles.sliderDetails}>
-                      <strong>{sector.name}</strong>
-                      <p className={styles.sliderDesc}>{sector.description}</p>
-                      <ul className={styles.sliderDeliverables}>
-                        {sector.deliverables.map((d) => <li key={d}>{d}</li>)}
-                      </ul>
-                      <a href="#contact" className={styles.estimateButton} onClick={(e) => { e.stopPropagation(); document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }); }}>
-                        Get Estimate
-                      </a>
-                    </div>
+            <div className={styles.servicesPanels}>
+              <nav className={styles.sectorList} aria-label="Sector navigation">
+                {sectorSlides.map((sector, index) => (
+                  <button
+                    key={sector.name}
+                    type="button"
+                    className={joinClasses(styles.sectorTab, activeSlide === index && styles.sectorTabActive)}
+                    onClick={() => setActiveSlide(index)}
+                    aria-pressed={activeSlide === index}
+                  >
+                    {sector.name}
                   </button>
-                );
-              })}
+                ))}
+              </nav>
+              <div className={styles.sectorDetail}>
+                <div className={styles.sectorDetailInner} key={activeSlide}>
+                  <h3 className={styles.sectorTitle}>{sectorSlides[activeSlide].name}</h3>
+                  <p className={styles.sectorDesc}>{sectorSlides[activeSlide].description}</p>
+                  <h4 className={styles.sectorSubhead}>Key Deliverables</h4>
+                  <ul className={styles.sectorDeliverables}>
+                    {sectorSlides[activeSlide].deliverables.map((d) => <li key={d}>{d}</li>)}
+                  </ul>
+                  <a href="#contact" className={styles.estimateButton} onClick={(e) => { e.preventDefault(); document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }); }}>
+                    Get Estimate
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </section>
