@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'JSDetail: Aerial. Ground. Story.',
+  title: 'JSDetail — Perspective with Purpose',
   description:
-    'JSDetail fuses drone cinematography, studio photography, and cinematic editing to deliver visuals that drive outcomes.',
+    'Precision aerial data capture and analysis. RTK-grade accuracy for real estate, solar, agriculture, construction, roofing, infrastructure, and more.',
 };
 
 export default function RootLayout({
